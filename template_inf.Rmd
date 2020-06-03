@@ -1,0 +1,34 @@
+---
+output: 
+  pdf_document:
+    keep_tex: false
+    fig_caption: yes
+    latex_engine: pdflatex
+    template: theme/latexTemplate_info.tex
+geometry: margin=0.7in
+papersize: letterpaper
+
+
+report: true
+author: "Grupo de Genómica Computacional, INMEGEN"
+date: "`r Sys.time()`"
+
+id: "`r the_sample_is`"
+controls: "`r qcplate`"
+
+
+email: "dr.gecko@inmegen.gob.mx"
+web: "www.inmegen.gob.mx"
+
+
+fontfamily: fontenc
+fontsize: 11pt
+header-includes:
+   - \linespread{1.05}
+graphics: true
+width: 1
+logoposition: center
+logo: theme/Inmegenlogosalud.pdf
+---
+
+
