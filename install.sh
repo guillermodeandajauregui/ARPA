@@ -19,7 +19,7 @@ sudo Rscript -e 'install.packages("cowplot")'
 sudo Rscript -e 'install.packages("ggpubr")'
 sudo Rscript -e 'install.packages("kableExtra")'
 sudo Rscript -e 'install.packages("growthrates")'
-
+sudo Rscript -e 'install.packages("fs")'
 
 
 ##### VERIFY THE EXISTENCE OF COMMAND RSCRIPT
