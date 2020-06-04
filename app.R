@@ -16,6 +16,7 @@ library(DT)
 source("function_app_qPCR_cdc.R")
 source("function_plate_conf.R")
 source("src/functions.R")
+source("src/getVolumes.R")
 
 #input <- c("data/Procolo_COVID-19_Prueba1_4Abr20.eds")
 #output <- c("results/")
@@ -155,7 +156,7 @@ server <- function(input, output, session) {
   })
   
   ###### LEER ESTRUCTURA DE DIRECTORIOS LOCAL
-  volumes <- getVolumes()
+  volumes <- getVolumesHome()()
   
   ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO EDS A PROCESAR
   shinyFileChoose(input,'file_eds', roots=volumes, session=session)
