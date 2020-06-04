@@ -60,7 +60,7 @@ tidy_deltaRN <- function(eds){
   ### make a data frame 
   df_deltaRN <- 
   list_deltaRN %>% 
-    bind_rows()
+    as_tibble()
   
   ### add the cycles
   
