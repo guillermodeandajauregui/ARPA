@@ -43,8 +43,14 @@ ui <- fluidPage(
     
     ######## h2("Selecciona el archivo a procesar"),
     #fileInput("rtpcr", "Sube el archivo a procesar"),
-    h5('Selecciona el archivo a procesar'),
-    shinyFilesButton('file', 'Archivo a procesar', 'Selecciona el archivo a procesar', FALSE),
+    h5('Selecciona el archivo EDS a procesar'),
+    shinyFilesButton('file_eds', 'Archivo EDS', 'Selecciona el archivo EDS a procesar', FALSE),
+    hr(),
+    
+    ######## h2("Selecciona el archivo a procesar"),
+    #fileInput("rtpcr", "Sube el archivo a procesar"),
+    h5('Selecciona el archivo TXT a procesar'),
+    shinyFilesButton('file_txt', 'Archivo TXT', 'Selecciona el TXT archivo a procesar', FALSE),
     hr(),
     
     ######## h2("Selecciona el directorio para los resultados"),
@@ -57,16 +63,7 @@ ui <- fluidPage(
     ######## BUTTON TO GENERATE SUMMARY TABLE
     h5('Presiona para analizar los datos de la corrida'),
     actionButton("analizar", "Analizar corrida"),
-    hr(),
-    
-    ######## BUTTON TO PRINT PLOTS TO WEB
-    #h5('Presiona para imprimir las curvas control en la interfaz web'),
-    #actionButton("plot", "Imprimir curvas control en Web"),
-    #hr(),
-    
-    ######## BUTTON TO GENERATE PLATE CONFIGURATION TABLE
-    h5('Presiona para generar el reporte de la placa'),
-    actionButton("plate", "Reporte placa")
+    hr()
 
   ),
   
@@ -88,11 +85,20 @@ ui <- fluidPage(
                
                ###### ARCHIVO A PROCESAR    
                fluidRow(
-                 h4("Archivo a procesar seleccionado"),
-                 textOutput("input_file")
+                 h4("Archivo EDS seleccionado"),
+                 textOutput("input_eds_file")
                ),
                hr(),
                hr(),
+               
+               ###### ARCHIVO A PROCESAR    
+               fluidRow(
+                 h4("Archivo TXT seleccionado"),
+                 textOutput("input_txt_file")
+               ),
+               hr(),
+               hr(),
+               
                
                ###### DIRECTORIO DE RESULTADOS
                fluidRow(
@@ -124,15 +130,8 @@ ui <- fluidPage(
                h2(textOutput("caption3")),
                plotOutput("plot3")
                #dataTableOutput(outputId = 'summary_table_gene')
-      ),
-      tabPanel(title = "Reporte de la placa",
-               value = "plate", 
-               dataTableOutput(outputId = 'plate_conf')
-               #dataTableOutput(outputId = 'prueba'),
-               #plotlyOutput('coveragePlot', height = "400px")
       )
     )
-    
   )
 )
 
@@ -158,17 +157,30 @@ server <- function(input, output, session) {
   ###### LEER ESTRUCTURA DE DIRECTORIOS LOCAL
   volumes <- getVolumes()
   
-  ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO A PROCESAR
-  shinyFileChoose(input,'file', roots=volumes, session=session)
+  ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO EDS A PROCESAR
+  shinyFileChoose(input,'file_eds', roots=volumes, session=session)
   
-  input_file <- reactive({
-    inFile <- parseFilePaths(volumes, input$file)
+  input_eds_file <- reactive({
+    inFile <- parseFilePaths(volumes, input$file_eds)
+    inFile.path <- as.character(inFile$datapath)
+  })
+  
+  ####### IMPRIMIR LA RUTA DEL ARCHIVO EDS A PROCESAR
+  output$input_eds_file <- renderText({
+    input_eds_file()
+  })
+  
+  ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO TXT A PROCESAR
+  shinyFileChoose(input,'file_txt', roots=volumes, session=session)
+  
+  input_txt_file <- reactive({
+    inFile <- parseFilePaths(volumes, input$file_txt)
     inFile.path <- as.character(inFile$datapath)
   })
   
   ####### IMPRIMIR LA RUTA DEL ARCHIVO A PROCESAR
-  output$input_file <- renderText({
-    input_file()
+  output$input_txt_file <- renderText({
+    input_txt_file()
   })
   
   ###### DESPLIEGUE PARA LA ELECCION DEL DIRECTORIO DE SALIDA
@@ -187,12 +199,32 @@ server <- function(input, output, session) {
   ####### CORRER EL PROCESO DE CLASIFICACION AL DARLE CLICK AL BOTON ANALIZAR
   table_out <- eventReactive(input$analizar, {
     
-    rtpcr <- input_file()
+    
+    rtpcr <- input_eds_file()
+    txt <- input_txt_file()
     
     if (is.null( rtpcr))
       return("NO EXISTE ARCHIVO DE ENTRADA")
     
     output <- output_dir()
+    
+    ######## VALIDATE THAT  INPUT EDS FILE WAS SELECTED
+    ######## OTHERWISE PRINT TEXT DESCRIBIING THE ERROR
+    validate(
+      need(rtpcr != "", "NO EDS FILE WAS SELECTED")
+    )
+    
+    ######## VALIDATE THAT OUTPUT DIRECTORY WAS SELECTED
+    ######## OTHERWISE PRINT TEXT DESCRIBIING THE ERROR
+    validate(
+      need(txt != "", "NO TXT FILE WAS SELECTED")
+    )
+    
+    ######## VALIDATE THAT OUTPUT DIRECTORY WAS SELECTED
+    ######## OTHERWISE PRINT TEXT DESCRIBIING THE ERROR
+    validate(
+      need(output != "", "NO OUTPUT DIRECTORY WAS SELECTED")
+    )
     
     withProgress(message = 'corriendo analisis', value = 0.3, {
       all_results <- qpcr_pipeline.cdc(input=rtpcr, output=paste(output, "/", sep=""))
@@ -255,26 +287,6 @@ server <- function(input, output, session) {
     table_out()
     plots <- table_out()$triplets.qc
     (plots[[3]] + ggtitle(labels(plots)[3]))
-  })
-  
-  
-  
-  ####### OBTENER LA CONFIGURACION DE LA PLACA AL DARLE CLICK AL BOTON REPORTE PLACA
-  plate_out <- eventReactive(input$plate, {
-    
-    rtpcr <- input_file()
-    
-    if (is.null( rtpcr))
-      return("NO EXISTE ARCHIVO DE ENTRADA")
-    
-    plate_conf <- get_plate_conf(rtpcr)
-    return(plate_conf)
-  })
-   
-  ####### IMPRIMIR TABLA DE CONFUGURACION 
-  output$plate_conf <- renderDataTable({
-    plate_out()
-    datatable(plate_out())
   })
 
 }
