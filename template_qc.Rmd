@@ -10,15 +10,15 @@ papersize: letterpaper
 
 
 report: true
-author: "Grupo de Gen??mica Computacional, INMEGEN"
+author: "Laboratorio diagnóstico SaR-CoV-2"
 date: "`r Sys.time()`"
 
 plate: "`r plate`"
 controls: "`r qcplate`"
 ncontrols: "`r length(result_table$sample)`"
 
-email: "dr.gecko@inmegen.gob.mx"
-web: "www.inmegen.gob.mx"
+email: "juan@perez.gob.mx"
+web: "www.laboratorio.gob.mx"
 
 
 fontfamily: fontenc

@@ -10,7 +10,7 @@ papersize: letterpaper
 date: "`r Sys.Date()`"
 receiber: "Dr. X"
 id: "`r unique(client)`"
-analista: "Alfredo Mendoza"
+analista: "Juan Pérez"
 brigada: "A1"
 nsamples: "`r as.character(n_samples)`"
 allsamples: "`r as.character(allsamples)`"
