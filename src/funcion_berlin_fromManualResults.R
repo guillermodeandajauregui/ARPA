@@ -242,10 +242,7 @@ funcion_berlin_fromManualResults <- function(input_eds,
   results_list <- list(
     test_results = test.results,
     qc_results = qc_results, 
-    plots_qc = plots.qc, 
-    plots_samples = plots.samples,
-    triplets.qc = triplets.qc, 
-    triplets.samples = triplets.samples
+    single_plots = single_plots
   )
   
   return(results_list)
