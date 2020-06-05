@@ -147,7 +147,30 @@ funcion_berlin_fromManualResults <- function(input_eds,
     unique() %>% 
     pull(target_name) 
     
+  
+  
+  #############
+  #list of single figure plots
+  #############
+  
+  all_samples <- my_results$sample_name %>% unique
+  names(all_samples) <- all_samples
+  
+  single_plots <- lapply(all_samples, FUN = function(i){
+    sample_curve.berlin.manual(tdrn = my_deltaRN, 
+                               sample_id = i, 
+                               th_list = threshold_list,
+                               probes = berlin_probes
+    )
+  })
     
+    
+  ########
+  #This functions need to be fixed to take either
+  #A) the QC samples used by analytical team (HARDCODED)
+  #or 
+  #B) Arbitrary QC samples defined by user 
+  ########
   plots.qc <- plot.curves(tdrn = my_deltaRN, 
                           probes = berlin_probes, 
                           threshold_list = threshold_list,
@@ -158,6 +181,12 @@ funcion_berlin_fromManualResults <- function(input_eds,
                                threshold_list = threshold_list,
                                qc = F)
   
+  
+  ############
+  #This functions need to be fixed
+  #to work with berlin protocol
+  #they are returning empty plots
+  ############
   triplets.qc <- triplets(plots.qc)
   
   triplets.samples <- triplets(plots.samples)
@@ -165,6 +194,13 @@ funcion_berlin_fromManualResults <- function(input_eds,
   ################################################################################
   #Write individual reports
   ################################################################################
+  
+  ############
+  #This functions need to be fixed
+  #to work with berlin protocol
+  #they are returning empty plots
+  #because they are looking for CDC probes
+  ############
   
   make_reports(plot_list = triplets.samples, 
                result_table = qc_results$qc.values, 
@@ -191,6 +227,8 @@ funcion_berlin_fromManualResults <- function(input_eds,
   ################################################################################
   #Write plate Booklet
   ################################################################################
+  
+  test_diagnosis <- test.results
   
   plateBooklet(results = test_diagnosis,
                qc_results = qc_results,
