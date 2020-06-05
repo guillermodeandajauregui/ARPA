@@ -1,6 +1,12 @@
 library(tidyverse)
 library(vroom)
 library(janitor)
+source("src/functions.R")
+source("src/functions_adjustment.R")
+source("src/functions_sanitizing.R")
+source("src/getVolumes.R")
+source("src/plots.R")
+source("src/reports.R")
 
 funcion_berlin_fromManualResults <- function(input_eds, 
                                              input_txt){
@@ -46,7 +52,7 @@ funcion_berlin_fromManualResults <- function(input_eds,
   #read txt 
   
   my_results <- vroom::vroom(input_txt, skip = 8, delim = "\t") 
-  my_results <- janitor::clean_names()
+  my_results <- janitor::clean_names(my_results)
   ###may come with some NAs, so lets drop them
   my_results <- my_results %>% 
     filter(!is.na(sample_name)) %>% 
