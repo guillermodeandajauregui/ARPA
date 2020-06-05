@@ -229,7 +229,7 @@ funcion_berlin_fromManualResults <- function(input_eds,
   #Write plate Booklet
   ################################################################################
   
-  test_diagnosis <- test.results
+  test_diagnosis <- cbind(plate, test.results)
   
   plateBooklet(results = test_diagnosis,
                qc_results = qc_results,
