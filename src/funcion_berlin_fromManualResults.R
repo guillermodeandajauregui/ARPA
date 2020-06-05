@@ -129,7 +129,7 @@ funcion_berlin_fromManualResults <- function(input_eds,
   
   test.results <- 
     test.samples %>% 
-    mutate(classifaction = ifelse(gen_e <= 38, "positive", "negative" ))
+    mutate(classification = ifelse(gen_e <= 38, "positive", "negative" ))
   
   ################################################################################
   #Plot preparation
