@@ -69,13 +69,13 @@ funcion_berlin_fromManualResults <- function(input_eds,
   
   test.samples <-
     results.pivoted %>% 
-    filter(!(sample_name%in%qc_names)) %>% 
-    pull(sample_name) %>% .[!is.na(.)]
+    filter(!(sample_name%in%qc_names)) #%>% 
+    #pull(sample_name) %>% .[!is.na(.)]
   
   qc.samples <-
     results.pivoted %>% 
-    filter((sample_name%in%qc_names)) %>% 
-    pull(sample_name) %>% .[!is.na(.)]
+    filter((sample_name%in%qc_names)) #%>% 
+    #pull(sample_name) %>% .[!is.na(.)]
   
   ##do results for qc
   ##############################################################################
