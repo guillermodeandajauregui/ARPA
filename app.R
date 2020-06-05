@@ -164,7 +164,7 @@ server <- function(input, output, session) {
   })
   
   ###### LEER ESTRUCTURA DE DIRECTORIOS LOCAL
-  volumes <- getVolumesHome()()
+  volumes <- getVolumesHome()
   
   ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO EDS A PROCESAR
   shinyFileChoose(input,'file_eds', roots=volumes, session=session)
