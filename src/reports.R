@@ -29,31 +29,29 @@ make_reports <- function(plot_list,
                          outdir, 
                          qc_results,
                          qc = F){
-  plate <- stringr::str_remove(string = basename(input), pattern = ".eds")
+  plate <- stringr::str_remove(string = basename(input_eds), pattern = ".eds")
   qcplate <- ifelse(qc_results == "PASS", "true", "")
+  qcs <- which(names(plot_list) %in% c("NTC", "PTC", "CRE"))
+  smpls <- which(!(names(plot_list) %in% c("NTC", "PTC", "CRE")))
+  smplsPlots <- plot_list[smpls]
   #makes reports from a list of plots and some result table
   if(qc==F){
-  lapply(seq_along(plot_list), function(i){
+  lapply(seq_along(smplsPlots), function(i){
     
-    the_sample_is <- names(plot_list)[i]
-    
-    my_r <- 
-      result_table %>% 
-      filter(sample == the_sample_is)
-    
-    my_name <- names(plot_list)[i]
-    mea_plote <- plot_list[i]
+    the_sample_is <- names(smplsPlots)[i]    
+    my_name <- names(smplsPlots)[i]
+    mea_plote <- smplsPlots[i]
     
     outpath <- paste0(outdir, "/", Sys.Date(), "_", my_name, ".pdf")
     outpath_inf <- paste0(outdir, "/", Sys.Date(), "_", my_name, "_results.pdf")
     # render("template_inf.Rmd", output_file = outpath_inf)
     render("template_smpl.Rmd",output_file = outpath)})
   }else{
-    my_r <- as.matrix(result_table)[,c("sample", "N1", "N2", "RP")]
+    my_r <- as.matrix(result_table)[,c("sample_name", "gen_e", "gen_r_nasa_p")]
     my_r[grep("Inf", my_r)] <- "45+"
     ntc <- grep(pattern = "NTC", x = names(plot_list))
   ptc <- grep(pattern = "PTC", x = names(plot_list))
-  exc <- grep(pattern = "EC", x = names(plot_list))
+  exc <- grep(pattern = "CRE", x = names(plot_list))
     outpath <- paste0(outdir, "/", Sys.Date(), "_", plate, ".pdf")
     render("template_qc.Rmd",output_file = outpath)
   }

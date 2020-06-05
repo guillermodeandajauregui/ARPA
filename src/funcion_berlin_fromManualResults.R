@@ -203,14 +203,14 @@ funcion_berlin_fromManualResults <- function(input_eds,
   #because they are looking for CDC probes
   ############
   
-  make_reports(plot_list = triplets.samples, 
+  make_reports(plot_list = single_plots, 
                result_table = qc_results$qc.values, 
                input = input,
                outdir = output, 
                qc_results = qc_results$QC,
                qc = F)
   
-  make_reports(plot_list = triplets.qc, 
+  make_reports(plot_list = single_plots, 
                result_table = qc_results$qc.values, 
                input = input,
                outdir = output, 
