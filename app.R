@@ -17,6 +17,7 @@ source("function_app_qPCR_cdc.R")
 source("function_plate_conf.R")
 source("src/functions.R")
 source("src/getVolumes.R")
+source("src/funcion_berlin_fromManualResults.R")
 
 #input <- c("data/Procolo_COVID-19_Prueba1_4Abr20.eds")
 #output <- c("results/")
@@ -37,10 +38,6 @@ ui <- fluidPage(
   
   ###### SIDE BAR - CONTROLADOR DE ACCIONES
   sidebarPanel(
-    ######## SELECT ONE GENE TO PLOT
-    selectInput("protocol", "Selecciona un protocolo",
-                choices = as.list(c("CDC", "Berlin")), selected = 1),
-    hr(),
     
     ######## h2("Selecciona el archivo a procesar"),
     #fileInput("rtpcr", "Sube el archivo a procesar"),
@@ -116,7 +113,7 @@ ui <- fluidPage(
                  dataTableOutput(outputId = 'run_ready')
                )
       ),
-      tabPanel(title = "Curvas control",
+      tabPanel(title = "Curvas QC",
                value = "curves", 
                h3(textOutput("caption1")),
                plotOutput("plot1"),
@@ -131,6 +128,17 @@ ui <- fluidPage(
                h2(textOutput("caption3")),
                plotOutput("plot3")
                #dataTableOutput(outputId = 'summary_table_gene')
+      ), 
+      tabPanel(title = "Curvas muestra",
+               value = "samples", 
+               
+               h3("Selecciona una muestra para visualizar sus curvas de amplificacion"),
+               selectInput(inputId = "sample", label = "", choices = NULL),
+               br(),
+               br(),
+               
+               h3(textOutput("caption_sample")),
+               plotOutput("plot_sample")
       )
     )
   )
@@ -228,7 +236,10 @@ server <- function(input, output, session) {
     )
     
     withProgress(message = 'corriendo analisis', value = 0.3, {
-      all_results <- qpcr_pipeline.cdc(input=rtpcr, output=paste(output, "/", sep=""))
+      all_results <- funcion_berlin_fromManualResults(
+        input_eds = rtpcr, 
+        input_txt = txt,
+        output = paste(output, "/", sep=""))
     })
     
     return(all_results)
@@ -255,39 +266,61 @@ server <- function(input, output, session) {
     }
   })
   
-  ####### IMPRIMIR CURVAS AL DARLE CLICK AL BOTON 
+  
+  ################################################################################
+  # IMPRIMIR CURVAS DE QC 
+  ################################################################################
   
   output$caption1 <- renderText({
-    table_out()
-    names(table_out()$triplets.qc)[1]
+    "NTC"
   })
   
   output$plot1 <- renderPlot({
     table_out()
-    plots <- table_out()$triplets.qc
-    (plots[[1]] + ggtitle(labels(plots)[1]))
+    plots <- table_out()$single.plots
+    (plots[['NTC']] + ggtitle("NTC"))
   })
   
   output$caption2 <- renderText({
-    table_out()
-    names(table_out()$triplets.qc)[2]
+    "PTC"
   })
   
   output$plot2 <- renderPlot({
     table_out()
-    plots <- table_out()$triplets.qc
-    (plots[[2]] + ggtitle(labels(plots)[2]))
+    plots <- table_out()$single.plots
+    (plots[['PTC']] + ggtitle('PTC'))
   })
   
   output$caption3 <- renderText({
-    table_out()
-    names(table_out()$triplets.qc)[3]
+    'CRE'
   })
   
   output$plot3 <- renderPlot({
     table_out()
-    plots <- table_out()$triplets.qc
-    (plots[[3]] + ggtitle(labels(plots)[3]))
+    plots <- table_out()$single.plots
+    (plots[['CRE']] + ggtitle('CRE'))
+  })
+  
+  ################################################################################
+  #Get sample names for drop-down menu
+  ################################################################################
+  
+  observe({
+    updateSelectInput(session = session, inputId = "sample", choices = table_out()[['test_results']]$sample_name)
+  })
+  
+  output$caption_sample <- renderText({
+    table_out()
+    sample <- input$sample
+    sample
+  })
+  
+  output$plot_sample <- renderPlot({
+    table_out()
+    sample <- input$sample
+    plots <- table_out()$single.plots
+    plot <- plots[[sample]]
+    (plot)
   })
 
 }
