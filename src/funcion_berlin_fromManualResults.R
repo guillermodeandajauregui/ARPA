@@ -205,14 +205,14 @@ funcion_berlin_fromManualResults <- function(input_eds,
   
   make_reports(plot_list = single_plots, 
                result_table = qc_results$qc.values, 
-               input = input,
+               input = input_eds,
                outdir = output, 
                qc_results = qc_results$QC,
                qc = F)
   
   make_reports(plot_list = single_plots, 
                result_table = qc_results$qc.values, 
-               input = input,
+               input = input_eds,
                outdir = output, 
                qc_results = qc_results$QC,
                qc = T)
