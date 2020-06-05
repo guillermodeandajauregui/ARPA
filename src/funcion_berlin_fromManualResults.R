@@ -9,7 +9,8 @@ source("src/plots.R")
 source("src/reports.R")
 
 funcion_berlin_fromManualResults <- function(input_eds, 
-                                             input_txt){
+                                             input_txt, 
+                                             output){
   
   
   #####################
