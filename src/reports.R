@@ -29,7 +29,7 @@ make_reports <- function(plot_list,
                          outdir, 
                          qc_results,
                          qc = F){
-  plate <- stringr::str_remove(string = basename(input_eds), pattern = ".eds")
+  plate <- stringr::str_remove(string = basename(input), pattern = ".eds")
   qcplate <- ifelse(qc_results == "PASS", "true", "")
   qcs <- which(names(plot_list) %in% c("NTC", "PTC", "CRE"))
   smpls <- which(!(names(plot_list) %in% c("NTC", "PTC", "CRE")))
