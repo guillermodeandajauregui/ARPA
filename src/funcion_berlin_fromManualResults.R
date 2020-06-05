@@ -44,6 +44,15 @@ funcion_berlin_fromManualResults <- function(input_eds,
     return("some_samples_are_missing_probes")
   }
   
+  ##############################################################################
+  #define QC names 
+  #this is hard code for now, until we get feedback on actual names and roles
+  #used by analytics team
+  ##############################################################################
+  
+  qc_names = c("NTC", "PTC", "CRE")
+  
+  
   #read eds 
   
   my_deltaRN <- tidy_deltaRN(input_eds) #read deltaRN from EDS file 
@@ -119,7 +128,7 @@ funcion_berlin_fromManualResults <- function(input_eds,
   
   test.results <- 
     test.samples %>% 
-    mutate(classifaction = ifelse(gen_e <= 38 ~ "positive", "negative" ))
+    mutate(classifaction = ifelse(gen_e <= 38, "positive", "negative" ))
   
   ################################################################################
   #Plot preparation
