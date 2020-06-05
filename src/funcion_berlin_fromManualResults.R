@@ -222,7 +222,7 @@ funcion_berlin_fromManualResults <- function(input_eds,
   ################################################################################
   
   
-  plate <- stringr::str_remove(string = basename(input), pattern = ".eds")
+  plate <- stringr::str_remove(string = basename(input_eds), pattern = ".eds")
   
   
   ################################################################################
