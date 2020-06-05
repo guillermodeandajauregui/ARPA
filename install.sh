@@ -11,7 +11,7 @@ command -v Rscript >/dev/null 2>&1 || { echo >&2 "I require Rscript but it's not
 ##### INSTALLING DEPENDENCIES
 sudo Rscript -e 'install.packages("shiny")'
 sudo Rscript -e 'install.packages("shinythemes")'
-sudo Rscript -e 'install.packages("shinyFiles", repos = "https://radiant-rstats.github.io/minicran/")'
+sudo Rscript -e 'install.packages("shinyFiles")'
 sudo Rscript -e 'install.packages("DT")'
 sudo Rscript -e 'install.packages("tidyverse")'
 sudo Rscript -e 'install.packages("rmarkdown")'
