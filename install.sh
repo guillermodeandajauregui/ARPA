@@ -20,6 +20,7 @@ sudo Rscript -e 'install.packages("ggpubr")'
 sudo Rscript -e 'install.packages("kableExtra")'
 sudo Rscript -e 'install.packages("growthrates")'
 sudo Rscript -e 'install.packages("fs")'
+sudo Rscript -e 'install.packages("janitor")'
 
 
 ##### VERIFY THE EXISTENCE OF COMMAND RSCRIPT
