@@ -277,7 +277,7 @@ server <- function(input, output, session) {
   
   output$plot1 <- renderPlot({
     table_out()
-    plots <- table_out()$single.plots
+    plots <- table_out()$single_plots
     (plots[['NTC']] + ggtitle("NTC"))
   })
   
@@ -287,7 +287,7 @@ server <- function(input, output, session) {
   
   output$plot2 <- renderPlot({
     table_out()
-    plots <- table_out()$single.plots
+    plots <- table_out()$single_plots
     (plots[['PTC']] + ggtitle('PTC'))
   })
   
@@ -297,7 +297,7 @@ server <- function(input, output, session) {
   
   output$plot3 <- renderPlot({
     table_out()
-    plots <- table_out()$single.plots
+    plots <- table_out()$single_plots
     (plots[['CRE']] + ggtitle('CRE'))
   })
   
@@ -318,7 +318,7 @@ server <- function(input, output, session) {
   output$plot_sample <- renderPlot({
     table_out()
     sample <- input$sample
-    plots <- table_out()$single.plots
+    plots <- table_out()$single_plots
     plot <- plots[[sample]]
     (plot)
   })
