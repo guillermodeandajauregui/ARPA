@@ -105,26 +105,25 @@ getClientID <- function(idinmegen){
 # Print the plate report for the lab
 plateBooklet <- function(results, outdir, qc_results){
     qcdf <- data.frame(controType = c("Positivo", "Negativo", "Extracción"), 
-                    externalName = c("nCoVPC", "NTC", "HSC"), 
+                    externalName = c("PTC", "NTC", "CRE"), 
                     used = c("Falla sustancial del reactivo, incluida la integridad del primer y la sonda.", "Contaminación de reactivos y/o ambiente.", "Falla en el procedimiento de lisis y extracción, contaminación potencial durante la extracción."))
-    qc_table <- data.frame(qc_results$qc.values[c(2,1,3),c(3,4,2)])
+    qc_table <- data.frame(qc_results$qc.values[c(3, 1, 2),c(2, 3)])
     my_qc <- cbind(qcdf,qc_table)
-    rownames(my_qc) <- c("PTC", "NTC", "EC")
-    my_qc["PTC", c("N1", "N2", "RP")] = ifelse(qc_results$ptc.pass, paste("\\color{teal}{", my_qc["PTC", c("N1", "N2", "RP")], "}", sep = "") , paste("\\cellcolor{red!50}{", my_qc["PTC", c("N1", "N2", "RP")], "}", sep = "") )
-    my_qc["NTC", c("N1", "N2", "RP")] = ifelse(qc_results$ntc.pass, paste("\\color{teal}{", "+45", "}", sep = ""), paste("\\cellcolor{red!50}{", my_qc["NTC", c("N1", "N2", "RP")], "}", sep = "") )
-    my_qc["EC", c("N1", "N2", "RP")] = ifelse(is.na(my_qc$N1[3]), my_qc["EC", c("N1", "N2", "RP")], ifelse(qc_results$ec.pass, paste("\\color{teal}{", "+45", "}", sep = ""), paste("\\cellcolor{red!50}{", my_qc["EC", c("N1", "N2", "RP")], "}", sep = "")))
+    rownames(my_qc) <- c("PTC", "NTC", "CRE")
+    my_qc["PTC", c("gen_e", "gen_r_nasa_p")] = ifelse(qc_results$ptc.pass == "PASS", paste("\\color{teal}{", my_qc["PTC", c("gen_e", "gen_r_nasa_p")], "}", sep = "") , paste("\\cellcolor{red!50}{", my_qc["PTC", c("gen_e", "gen_r_nasa_p")], "}", sep = "") )
+    my_qc["NTC", c("gen_e", "gen_r_nasa_p")] = ifelse(qc_results$ntc.pass == "PASS", paste("\\color{teal}{", "+45", "}", sep = ""), paste("\\cellcolor{red!50}{", my_qc["NTC", c("gen_e", "gen_r_nasa_p")], "}", sep = "") )
+    my_qc["CRE", c("gen_e", "gen_r_nasa_p")] = ifelse(qc_results$ec.pass== "PASS", paste("\\color{teal}{", "+45", "}", sep = ""), paste("\\cellcolor{red!50}{", my_qc["CRE", c("gen_e", "gen_r_nasa_p")], "}", sep = ""))
 
-    my_r <- results[,c("plate", "sample", "N1", "N2", "RP", "classification")]
+    my_r <- results[,c("plate", "sample_name", "gen_e", "gen_r_nasa_p", "classification")]
       my_r <- cbind(nsample = sub('(^[0-9]$)','0\\1', 1:length(my_r[,1])), my_r)
-      my_r[,"N1"] = ifelse(my_r[,"N1"] == "Inf", "Indeterminado", paste("\\cellcolor{red!50}{", my_r[,"N1"], "}", sep = ""))
-      my_r[,"N2"] = ifelse(my_r[,"N2"] == "Inf", "Indeterminado", paste("\\cellcolor{red!50}{", my_r[,"N2"], "}", sep = ""))
+      my_r[,"gen_e"] = ifelse(my_r[,"gen_e"] == "Inf", "Indeterminado", paste("\\cellcolor{red!50}{", my_r[,"gen_e"], "}", sep = ""))
       my_r[,"classification"] = ifelse(my_r[,"classification"] == "positive", "\\cellcolor{red!50}{positivo}", 
                                       ifelse(my_r[,"classification"] == "negative", "\\cellcolor{yellow!50}{negativo}", 
                                             ifelse(my_r[,"classification"] == "inconclusive", "\\cellcolor{cyan!50}{inconclusive}", 
                                                   ifelse(my_r[,"classification"] == "invalid", "\\cellcolor{cyan!50}{invalid}", 
                                                         ifelse(my_r[,"classification"] == "edge_positive", "\\cellcolor{red!25}{positivo marginal}", 
                                                           my_r[,"classification"])))))
-    processingdate <- unique(getDate(my_r$sample))
+    processingdate <- Sys.Date() #unique(getDate(my_r$sample))
     plate <- unique(results$plate)
     outpath <- paste0(outdir, "/", Sys.Date(), "_", plate, "_", "plateBooklet.pdf") 
     render("plateBooklet.Rmd",output_file = outpath)
