@@ -129,7 +129,7 @@ funcion_berlin_fromManualResults <- function(input_eds,
   
   test.results <- 
     test.samples %>% 
-    mutate(classifaction = ifelse(gen_e <= 38, "positive", "negative" ))
+    mutate(classification = ifelse(gen_e <= 38, "positive", "negative" ))
   
   ################################################################################
   #Plot preparation
@@ -172,25 +172,25 @@ funcion_berlin_fromManualResults <- function(input_eds,
   #or 
   #B) Arbitrary QC samples defined by user 
   ########
-  plots.qc <- plot.curves(tdrn = my_deltaRN, 
-                          probes = berlin_probes, 
-                          threshold_list = threshold_list,
-                          qc = T)
+  # plots.qc <- plot.curves(tdrn = my_deltaRN, 
+  #                         probes = berlin_probes, 
+  #                         threshold_list = threshold_list,
+  #                         qc = T)
   
-  plots.samples <- plot.curves(tdrn = my_deltaRN, 
-                               probes = berlin_probes, 
-                               threshold_list = threshold_list,
-                               qc = F)
+  # plots.samples <- plot.curves(tdrn = my_deltaRN, 
+  #                              probes = berlin_probes, 
+  #                              threshold_list = threshold_list,
+  #                              qc = F)
   
   
-  ############
-  #This functions need to be fixed
-  #to work with berlin protocol
-  #they are returning empty plots
-  ############
-  triplets.qc <- triplets(plots.qc)
+  # ############
+  # #This functions need to be fixed
+  # #to work with berlin protocol
+  # #they are returning empty plots
+  # ############
+  # triplets.qc <- triplets(plots.qc)
   
-  triplets.samples <- triplets(plots.samples)
+  # triplets.samples <- triplets(plots.samples)
   
   ################################################################################
   #Write individual reports
@@ -203,14 +203,14 @@ funcion_berlin_fromManualResults <- function(input_eds,
   #because they are looking for CDC probes
   ############
   
-  make_reports(plot_list = triplets.samples, 
+  make_reports(plot_list = single_plots, 
                result_table = qc_results$qc.values, 
                input = input,
                outdir = output, 
                qc_results = qc_results$QC,
                qc = F)
   
-  make_reports(plot_list = triplets.qc, 
+  make_reports(plot_list = single_plots, 
                result_table = qc_results$qc.values, 
                input = input,
                outdir = output, 

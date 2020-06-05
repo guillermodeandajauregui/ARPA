@@ -57,7 +57,7 @@ plot.curves <- function(tdrn, probes, threshold_list, qc = TRUE){
   #extracts quality control wells
   wells.ntc <- grep(pattern = "_NTC", x = colnames(tdrn))
   wells.ptc <- grep(pattern = "_PTC", x = colnames(tdrn))
-  wells.exc <- grep(pattern = "_EC", x = colnames(tdrn))
+  wells.exc <- grep(pattern = "_CRE", x = colnames(tdrn))
   
   ##and filter the tdrn
   if(qc == TRUE){
@@ -92,7 +92,7 @@ plot.curves <- function(tdrn, probes, threshold_list, qc = TRUE){
         the_curve     <- extract_curve(sample_data, probe == my_probe)
         #extract threshold
         
-        color <- ifelse(unique(the_curve$probe) == "RP", "#e41a1c", ifelse(unique(the_curve$probe) == "N1", "#377eb8", "#4daf4a"))
+        color <- ifelse(unique(the_curve$probe) == "Gen RNasaP", "#e41a1c", ifelse(unique(the_curve$probe) == "Gen E", "#377eb8", "#4daf4a"))
         
         #the_threshold <- get_threshold.rg(the_curve)
         the_threshold <- threshold_list[[my_probe]]
@@ -123,6 +123,24 @@ triplets <- function(curve.list){
 	names(triplets) <- names(curve.list)
 	return(triplets)
 }
+
+
+duplas <- function(curve.list){
+  triplet <- lapply(seq_along(curve.list), function(i){
+  plot_grid(curve.list[[i]]$N1, curve.list[[i]]$N2, curve.list[[i]]$RP, 
+    labels = c("N1", "N2", "RP"),
+    ncol = 1, nrow = 3,
+    label_size = 11,
+    hjust = 1)
+  })
+  triplets <- lapply(seq_along(triplet), function(i){
+  annotate_figure(triplet[[i]], bottom = text_grob("Cycle", size = 10, hjust = 1),
+                left = text_grob(bquote(Delta*"Rn"), size = 10, rot = 90))
+  })
+  names(triplets) <- names(curve.list)
+  return(triplets)
+}
+
 
 ##### sample_curve.cdc
 sample_curve.cdc <- function(tdrn, sample_id){
