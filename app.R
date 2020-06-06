@@ -16,7 +16,7 @@ library(DT)
 source("function_app_qPCR_cdc.R")
 source("function_plate_conf.R")
 source("src/functions.R")
-source("src/getVolumes.R")
+#source("src/getVolumes.R")
 source("src/funcion_berlin_fromManualResults.R")
 
 #input <- c("data/Procolo_COVID-19_Prueba1_4Abr20.eds")
@@ -164,13 +164,13 @@ server <- function(input, output, session) {
   })
   
   ###### LEER ESTRUCTURA DE DIRECTORIOS LOCAL
-  volumes <- getVolumesHome()
+  #volumes <- getVolumesHome()
   
   ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO EDS A PROCESAR
-  shinyFileChoose(input,'file_eds', roots=volumes, session=session)
+  shinyFileChoose(input,'file_eds', roots=c('wd' = '/home/'), session=session)
   
   input_eds_file <- reactive({
-    inFile <- parseFilePaths(volumes, input$file_eds)
+    inFile <- parseFilePaths(c('wd' = '/home/'), input$file_eds)
     inFile.path <- as.character(inFile$datapath)
   })
   
@@ -180,10 +180,10 @@ server <- function(input, output, session) {
   })
   
   ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO TXT A PROCESAR
-  shinyFileChoose(input,'file_txt', roots=volumes, session=session)
+  shinyFileChoose(input,'file_txt', roots=c('wd' = '/home/'), session=session)
   
   input_txt_file <- reactive({
-    inFile <- parseFilePaths(volumes, input$file_txt)
+    inFile <- parseFilePaths(c('wd' = '/home/'), input$file_txt)
     inFile.path <- as.character(inFile$datapath)
   })
   
@@ -194,10 +194,10 @@ server <- function(input, output, session) {
   
   ###### DESPLIEGUE PARA LA ELECCION DEL DIRECTORIO DE SALIDA
   
-  shinyDirChoose(input, 'directory', roots=volumes, session=session)
+  shinyDirChoose(input, 'directory', roots=c('wd' = '/home/'), session=session)
   
   output_dir <- reactive({
-    return(print(parseDirPath(volumes, input$directory)))
+    return(print(parseDirPath(c('wd' = '/home/'), input$directory)))
   })
   
   ####### IMPRIMIR EL DIRECTORIO DE SALIDA
