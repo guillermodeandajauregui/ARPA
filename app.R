@@ -153,45 +153,67 @@ server <- function(input, output, session) {
   osSystem <- Sys.info()["sysname"]
   
   if (osSystem == "Darwin"){
-    volumes <- getVolumesHome()
+    
+    volumes <- getVolumes()
+    ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO EDS A PROCESAR
+    shinyFileChoose(input,'file_eds', roots=volumes, session=session)
+    
+    input_eds_file <- reactive({
+      inFile <- parseFilePaths(volumes, input$file_eds)
+      inFile.path <- as.character(inFile$datapath)
+    })
+    
+    ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO TXT A PROCESAR
+    shinyFileChoose(input,'file_txt', roots=volumes, session=session)
+    
+    input_txt_file <- reactive({
+      inFile <- parseFilePaths(volumes, input$file_txt)
+      inFile.path <- as.character(inFile$datapath)
+    })
+    
+    ###### DESPLIEGUE PARA LA ELECCION DEL DIRECTORIO DE SALIDA
+    
+    shinyDirChoose(input, 'directory', roots=volumes, session=session)
+    
+    output_dir <- reactive({
+      return(print(parseDirPath(volumes, input$directory)))
+    })
   }
   else{
-    volumes <- c('wd' = '/home/')
+    ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO EDS A PROCESAR
+    shinyFileChoose(input,'file_eds', roots=c('wd' = '/covid/'), session=session)
+    
+    input_eds_file <- reactive({
+      inFile <- parseFilePaths(c('wd' = '/covid/'), input$file_eds)
+      inFile.path <- as.character(inFile$datapath)
+    })
+    
+    ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO TXT A PROCESAR
+    shinyFileChoose(input,'file_txt', roots=c('wd' = '/covid/'), session=session)
+    
+    input_txt_file <- reactive({
+      inFile <- parseFilePaths(c('wd' = '/covid/'), input$file_txt)
+      inFile.path <- as.character(inFile$datapath)
+    })
+    
+    ###### DESPLIEGUE PARA LA ELECCION DEL DIRECTORIO DE SALIDA
+    
+    shinyDirChoose(input, 'directory', roots=c('wd' = '/covid/'), session=session)
+    
+    output_dir <- reactive({
+      return(print(parseDirPath(c('wd' = '/covid/'), input$directory)))
+    })
   }
       
     
-  ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO EDS A PROCESAR
-  shinyFileChoose(input,'file_eds', roots=volumes, session=session)
-  
-  input_eds_file <- reactive({
-    inFile <- parseFilePaths(volumes, input$file_eds)
-    inFile.path <- as.character(inFile$datapath)
-  })
-  
   ####### IMPRIMIR LA RUTA DEL ARCHIVO EDS A PROCESAR
   output$input_eds_file <- renderText({
     input_eds_file()
   })
   
-  ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO TXT A PROCESAR
-  shinyFileChoose(input,'file_txt', roots=volumes, session=session)
-  
-  input_txt_file <- reactive({
-    inFile <- parseFilePaths(volumes, input$file_txt)
-    inFile.path <- as.character(inFile$datapath)
-  })
-  
   ####### IMPRIMIR LA RUTA DEL ARCHIVO A PROCESAR
   output$input_txt_file <- renderText({
     input_txt_file()
-  })
-  
-  ###### DESPLIEGUE PARA LA ELECCION DEL DIRECTORIO DE SALIDA
-  
-  shinyDirChoose(input, 'directory', roots=volumes, session=session)
-  
-  output_dir <- reactive({
-    return(print(parseDirPath(volumes, input$directory)))
   })
   
   ####### IMPRIMIR EL DIRECTORIO DE SALIDA
