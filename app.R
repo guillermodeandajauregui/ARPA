@@ -148,29 +148,23 @@ ui <- fluidPage(
 ###### SERVIDOR
 server <- function(input, output, session) {
   
-  ####### LEER EL PROTOCOLO A UTILIZAR
-  protocol <- reactive({
-    protocol <- input$protocol
-    
-    if (is.null( protocol))
-      return(NULL)
-    
-    return(protocol)
-  })
-
-  ####### IMPRIMIR EL PROTOCOLO A UTILIZAR
-  output$protocolo <- renderText({
-    protocol()
-  })
-  
   ###### LEER ESTRUCTURA DE DIRECTORIOS LOCAL
-  #volumes <- getVolumesHome()
+  ###### DEPENDE DEL SISTEMA OPERATIVO
+  osSystem <- Sys.info()["sysname"]
   
+  if (osSystem == "Darwin"){
+    volumes <- getVolumesHome()
+  }
+  else{
+    volumes <- c('wd' = '/home/')
+  }
+      
+    
   ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO EDS A PROCESAR
-  shinyFileChoose(input,'file_eds', roots=c('wd' = '/home/'), session=session)
+  shinyFileChoose(input,'file_eds', roots=volumes, session=session)
   
   input_eds_file <- reactive({
-    inFile <- parseFilePaths(c('wd' = '/home/'), input$file_eds)
+    inFile <- parseFilePaths(volumes, input$file_eds)
     inFile.path <- as.character(inFile$datapath)
   })
   
@@ -180,10 +174,10 @@ server <- function(input, output, session) {
   })
   
   ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO TXT A PROCESAR
-  shinyFileChoose(input,'file_txt', roots=c('wd' = '/home/'), session=session)
+  shinyFileChoose(input,'file_txt', roots=volumes, session=session)
   
   input_txt_file <- reactive({
-    inFile <- parseFilePaths(c('wd' = '/home/'), input$file_txt)
+    inFile <- parseFilePaths(volumes, input$file_txt)
     inFile.path <- as.character(inFile$datapath)
   })
   
@@ -194,10 +188,10 @@ server <- function(input, output, session) {
   
   ###### DESPLIEGUE PARA LA ELECCION DEL DIRECTORIO DE SALIDA
   
-  shinyDirChoose(input, 'directory', roots=c('wd' = '/home/'), session=session)
+  shinyDirChoose(input, 'directory', roots=volumes, session=session)
   
   output_dir <- reactive({
-    return(print(parseDirPath(c('wd' = '/home/'), input$directory)))
+    return(print(parseDirPath(volumes, input$directory)))
   })
   
   ####### IMPRIMIR EL DIRECTORIO DE SALIDA
