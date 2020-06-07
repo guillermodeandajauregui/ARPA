@@ -181,27 +181,27 @@ server <- function(input, output, session) {
   }
   else{
     ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO EDS A PROCESAR
-    shinyFileChoose(input,'file_eds', roots=c('wd' = '/covid/'), session=session)
+    shinyFileChoose(input,'file_eds', roots=c('wd' = '/home/'), session=session)
     
     input_eds_file <- reactive({
-      inFile <- parseFilePaths(c('wd' = '/covid/'), input$file_eds)
+      inFile <- parseFilePaths(c('wd' = '/home/'), input$file_eds)
       inFile.path <- as.character(inFile$datapath)
     })
     
     ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO TXT A PROCESAR
-    shinyFileChoose(input,'file_txt', roots=c('wd' = '/covid/'), session=session)
+    shinyFileChoose(input,'file_txt', roots=c('wd' = '/home/'), session=session)
     
     input_txt_file <- reactive({
-      inFile <- parseFilePaths(c('wd' = '/covid/'), input$file_txt)
+      inFile <- parseFilePaths(c('wd' = '/home/'), input$file_txt)
       inFile.path <- as.character(inFile$datapath)
     })
     
     ###### DESPLIEGUE PARA LA ELECCION DEL DIRECTORIO DE SALIDA
     
-    shinyDirChoose(input, 'directory', roots=c('wd' = '/covid/'), session=session)
+    shinyDirChoose(input, 'directory', roots=c('wd' = '/home/'), session=session)
     
     output_dir <- reactive({
-      return(print(parseDirPath(c('wd' = '/covid/'), input$directory)))
+      return(print(parseDirPath(c('wd' = '/home/'), input$directory)))
     })
   }
       
