@@ -13,8 +13,5 @@ echo ""
 
 [ -f app.R ] && echo "YOU ARE IN THE APP DIRECTORY" || { echo "YOU ARE NOT IN THE APP DIRECTORY"; exit 1;}
 
-sudo update-alternatives --config x-www-browser
-
-export BROWSER=/usr/bin/firefox
-
-Rscript -e "options(shiny::runApp('.', launch.browser = TRUE)"
+###### RUN THE SHINY APP
+Rscript launcher.R
