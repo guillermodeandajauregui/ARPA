@@ -278,7 +278,7 @@ server <- function(input, output, session) {
         formatStyle( 'classification', 
                      target = 'row',
                      backgroundColor = styleEqual(c("positive", "negative"),
-                                                  c('aquamarine', 'pink')) )
+                                                  c('pink', 'aquamarine')) )
     }
   })
   
