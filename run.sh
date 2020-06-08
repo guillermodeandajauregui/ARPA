@@ -13,4 +13,6 @@ echo ""
 
 [ -f app.R ] && echo "YOU ARE IN THE APP DIRECTORY" || { echo "YOU ARE NOT IN THE APP DIRECTORY"; exit 1;}
 
-Rscript -e "shiny::runApp('.', launch.browser = TRUE)"
+sudo update-alternatives --config x-www-browser
+
+Rscript -e "options(shiny::runApp('.', launch.browser = TRUE)"
