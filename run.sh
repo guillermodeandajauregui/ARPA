@@ -8,5 +8,9 @@ command -v Rscript >/dev/null 2>&1 || { echo >&2 "I require Rscript but it's not
 
 ##### WARNING MESSAGE
 echo "YOU MUST RUN THIS SOFTWARE FROM THE APPLICATION DIRECTORY"
+echo "#############"
+echo ""
 
-R -e "shiny::runApp('.', launch.browser = TRUE)"
+[ -f app.R ] && echo "YOU ARE IN THE APP DIRECTORY" || { echo "YOU ARE NOT IN THE APP DIRECTORY"; exit 1;}
+
+Rscript -e "shiny::runApp('.', launch.browser = TRUE)"
