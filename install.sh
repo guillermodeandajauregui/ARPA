@@ -24,6 +24,6 @@ sudo Rscript -e 'install.packages("janitor", repos="http://cran.us.r-project.org
 
 
 ##### VERIFY THE EXISTENCE OF COMMAND RSCRIPT
-command -v apt-get >/dev/null 2>&1 || { echo >&2 "LATEX UPDATE COULD NOT BE DONE. apt-get REQUIRED. IF YOU ARE ON iOS YOU SHOULD UPDATE YOUR LATEX PACKAGES IN LIVE-MAC UTILITY."; exit 1; }
+command -v apt-get >/dev/null 2>&1 || { echo >&2 "LATEX UPDATE COULD NOT BE DONE. apt-get REQUIRED. IF YOU ARE ON MacOSX YOU SHOULD UPDATE YOUR LATEX PACKAGES IN LIVE-MAC UTILITY."; exit 1; }
 
 apt-get install texlive-full
