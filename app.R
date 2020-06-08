@@ -154,7 +154,7 @@ server <- function(input, output, session) {
   
   if (osSystem == "Darwin"){
     
-    volumes <- getVolumes()
+    volumes <- getVolumes()()
     ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO EDS A PROCESAR
     shinyFileChoose(input,'file_eds', roots=volumes, session=session)
     
