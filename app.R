@@ -30,7 +30,7 @@ ui <- fluidPage(
   #                column(width = 6, h2("Aplicaci??n para an??lisis de RT-PCR")), 
   #            windowTitle="MyPage"),
   
-  titlePanel( div(column(width = 6, h1("Aplicativo para analizar datos de RT-PCR")), 
+  titlePanel( div(column(width = 6, h1("ARPA - Generador de reportes")), 
                   column(width = 4, tags$img(src = "images/inmegen.jpg"))),
               windowTitle="rt-PCR-analysis"),
   
