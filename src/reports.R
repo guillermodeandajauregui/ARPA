@@ -13,6 +13,7 @@
 #required libs
 ################################################################################
 library("rmarkdown")
+library("pdftools")
 
 
 ######################################################################################
@@ -36,16 +37,17 @@ make_reports <- function(plot_list,
   smplsPlots <- plot_list[smpls]
   #makes reports from a list of plots and some result table
   if(qc==F){
+  dir.create("./temp")
   lapply(seq_along(smplsPlots), function(i){
-    
-    the_sample_is <- names(smplsPlots)[i]    
-    my_name <- names(smplsPlots)[i]
-    mea_plote <- smplsPlots[i]
-    
-    outpath <- paste0(outdir, "/", Sys.Date(), "_", my_name, ".pdf")
-    outpath_inf <- paste0(outdir, "/", Sys.Date(), "_", my_name, "_results.pdf")
-    # render("template_inf.Rmd", output_file = outpath_inf)
-    render("template_smpl.Rmd",output_file = outpath)})
+        the_sample_is <- names(smplsPlots)[i]    
+        my_name <- names(smplsPlots)[i]
+        mea_plote <- smplsPlots[i]
+        outpath <- paste0("temp", "/", Sys.Date(), "_", my_name, ".smpl.pdf")
+        render("template_smpl.Rmd",output_file = outpath)})
+  pdfs <- dir("temp", full.names = TRUE)
+  outpath <- paste0(outdir, "/", Sys.Date(), "_", plate, ".smpls.pdf")
+  pdf_combine(pdfs, output = outpath)
+  unlink("temp/", recursive = TRUE)
   }else{
     my_r <- as.matrix(result_table)[,c("sample_name", "gen_e", "gen_r_nasa_p")]
     my_r[grep("Inf", my_r)] <- "45+"
