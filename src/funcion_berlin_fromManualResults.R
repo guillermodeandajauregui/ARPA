@@ -183,58 +183,6 @@ funcion_berlin_fromManualResults <- function(input_eds,
   #                              qc = F)
   
   
-  # ############
-  # #This functions need to be fixed
-  # #to work with berlin protocol
-  # #they are returning empty plots
-  # ############
-  # triplets.qc <- triplets(plots.qc)
-  
-  # triplets.samples <- triplets(plots.samples)
-  
-  ################################################################################
-  #Write individual reports
-  ################################################################################
-  
-  ############
-  #This functions need to be fixed
-  #to work with berlin protocol
-  #they are returning empty plots
-  #because they are looking for CDC probes
-  ############
-  
-  make_reports(plot_list = single_plots, 
-               result_table = qc_results$qc.values, 
-               input = input_eds,
-               outdir = output, 
-               qc_results = qc_results$QC,
-               qc = F)
-  
-  make_reports(plot_list = single_plots, 
-               result_table = qc_results$qc.values, 
-               input = input_eds,
-               outdir = output, 
-               qc_results = qc_results$QC,
-               qc = T)
-  
-  ################################################################################
-  #Get the plate name
-  ################################################################################
-  
-  
-  plate <- stringr::str_remove(string = basename(input_eds), pattern = ".eds")
-  
-  
-  ################################################################################
-  #Write plate Booklet
-  ################################################################################
-  
-  test_diagnosis <- cbind(plate, test.results)
-  
-  plateBooklet(results = test_diagnosis,
-               qc_results = qc_results,
-               outdir = output)
-  
   ################################################################################
   #Create list output
   ################################################################################
