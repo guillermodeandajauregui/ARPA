@@ -18,6 +18,7 @@ source("function_plate_conf.R")
 source("src/functions.R")
 #source("src/getVolumes.R")
 source("src/funcion_berlin_fromManualResults.R")
+source("src/link_reports.R")
 
 #input <- c("data/Procolo_COVID-19_Prueba1_4Abr20.eds")
 #output <- c("results/")
@@ -59,10 +60,19 @@ ui <- fluidPage(
     hr(),
     
     ######## BUTTON TO GENERATE SUMMARY TABLE
-    h5('Presiona para analizar los datos de la corrida'),
-    actionButton("analizar", "Analizar corrida"),
-    hr()
+    h5('Presiona para cargar los datos de la corrida'),
+    actionButton("cargar", "Cargar datos de corrida"),
+    hr(),
 
+    ######## BUTTON TO GENERATE SUMMARY TABLE
+    h5('Presiona para generar los reportes individuales de las muestras seleccionadas'),
+    actionButton("individual", "Reportes individuales"),
+    hr(),
+    
+    ######## BUTTON TO GENERATE SUMMARY TABLE
+    h5('Presiona para generar el reporte por placa de las muestras seleccionadas'),
+    actionButton("plate", "Reporte placa"),
+    hr()
   ),
   
   ###### DISE??O DEL PANEL PARA IMPRESION DE RESULTADOS
@@ -139,6 +149,20 @@ ui <- fluidPage(
                
                h3(textOutput("caption_sample")),
                plotOutput("plot_sample")
+      ), 
+      tabPanel(title = "Seleccion de muestras",
+               value = "select", 
+               
+               h3("Selecciona las muestra a incluir en el/los reporte/s"),
+               actionLink("selectall","Seleccionar todas"),
+               checkboxGroupInput("samples_report", "Muestras para reporte:", choices = NULL),
+               h4(textOutput("individual_output")),
+               br(),
+               br(),
+               h4(textOutput("plate_output")),
+               #selectInput(inputId = "sample", label = "", choices = NULL),
+               br(), 
+               br()
       )
     )
   )
@@ -222,7 +246,7 @@ server <- function(input, output, session) {
   })
   
   ####### CORRER EL PROCESO DE CLASIFICACION AL DARLE CLICK AL BOTON ANALIZAR
-  table_out <- eventReactive(input$analizar, {
+  table_out <- eventReactive(input$cargar, {
     
     
     rtpcr <- input_eds_file()
@@ -338,6 +362,81 @@ server <- function(input, output, session) {
     plot <- plots[[sample]]
     (plot)
   })
+  
+  ################################################################################
+  #Get sample names for checkbox menu
+  #Select samples to include in reports
+  ################################################################################
+  
+  observe({
+    sample_labels = table_out()[['test_results']]$sample_name
+    if (input$selectall%%2 == 0)
+    {
+      updateCheckboxGroupInput(session = session, inputId = "samples_report", choices = sample_labels)
+    }
+    else
+    {
+      updateCheckboxGroupInput(session = session, inputId = "samples_report", 
+                               choices = sample_labels, 
+                               selected = sample_labels)
+    }
+  })
+  
+  ################################################################################
+  #Print individual reports for selected samples
+  ################################################################################
+
+  reports_ind <- eventReactive(input$individual, {
+    
+    input_eds <- input_eds_file()
+    results <- table_out()
+    output <- output_dir()
+    
+    #plots <- results$single_plots
+    plots <- results$single_plots[input$samples_report]
+    withProgress(message = 'imprimiendo reportes individuales', value = 0.3, {
+      individual_reports(single_plots = plots, 
+                         qc_results = results$qc_results, 
+                         input_eds = input_eds, 
+                         output = paste(output, "/", sep="")
+      )
+    })
+    
+    return("HECHO; SE HAN IMPRESO LOS REPORTES INDIVIDUALES DE LAS MUESTRAS SELECCIONADAS")
+  })
+  
+  output$individual_output <- renderText({
+    reports_ind()
+  })
+  
+  
+  ################################################################################
+  #Print plate for selected samples
+  ################################################################################
+  
+  report_plate <- eventReactive(input$plate, {
+    
+    input_eds <- input_eds_file()
+    results <- table_out()
+    output <- output_dir()
+    
+    test_results = subset(results$test_results, sample_name %in% input$samples_report)
+    withProgress(message = 'imprimiendo reporte de la placa', value = 0.3, {
+      booklet_report(test_results = test_results, 
+                     qc_results = results$qc_results, 
+                     input_eds= input_eds, 
+                     output = paste(output, "/", sep="")
+      )
+    })
+    
+    return("HECHO; SE HA IMPRESO EL REPORTE DE PLACA PARA LAS MUESTRAS SELECCIONADAS")
+  })
+  
+  
+  output$plate_output <- renderText({
+    report_plate()
+  })
+  
 
 }
 
