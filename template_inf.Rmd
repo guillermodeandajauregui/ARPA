@@ -9,8 +9,11 @@ geometry: margin=0.7in
 papersize: letterpaper
 
 
+inf: "UNIPREC/Covid-19/ 0110"
+birthday: "25/05/1977"
+classification: "`r classification`"
+
 report: true
-author: "Laboratorio diagnóstico SaR-CoV-2"
 date: "`r Sys.time()`"
 
 id: "`r the_sample_is`"

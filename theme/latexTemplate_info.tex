@@ -123,20 +123,6 @@ $if(graphics)$
 $endif$
 
 
-$if(natbib)$
-\usepackage{natbib}
-\bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
-$endif$
-$if(biblatex)$
-\usepackage$if(biblio-style)$[style=$biblio-style$]$endif${biblatex}
-$if(biblatexoptions)$\ExecuteBibliographyOptions{$for(biblatexoptions)$$biblatexoptions$$sep$,$endfor$}$endif$
-$for(bibliography)$
-\addbibresource{$bibliography$}
-$endfor$
-$endif$
-$if(listings)$
-\usepackage{listings}
-$endif$
 
 \usepackage{setspace}
 
@@ -144,16 +130,6 @@ $if(graphics)$
 \usepackage[export]{adjustbox}
 $endif$
 
-$if(title)$
-\title{$title$$if(thanks)$\thanks{$thanks$}$endif$}
-$endif$
-$if(subtitle)$
-\providecommand{\subtitle}[1]{}
-\subtitle{$subtitle$}
-$endif$
-$if(author)$
-\author{$for(author)$$author$$sep$ \and $endfor$}
-$endif$
 \date{$date$}
 
 % Watermarck: 
@@ -173,8 +149,8 @@ $endif$
 $if(report)$
 \begin{center} 
 {\fontfamily{cmss}\selectfont
-\huge \bfseries{\scshape{SARS-CoV-2}}\\
-\normalsize \bfseries{\scshape{qPCR Report}}
+\huge \bfseries{\scshape{Detencción de SARS-CoV-2}}\\
+\normalsize \bfseries{\scshape{mediante RT-PCR en tiempo real}}
 }
 \end{center}
 $endif$
@@ -182,11 +158,13 @@ $endif$
 \vspace{2mm}
 
 {\fontfamily{cmss}\selectfont
-	\noindent \begin{tabular*}{\textwidth}{ @{\extracolsep{\fill}} lr @{\extracolsep{\fill}}}
+	\noindent \begin{tabular*}{\textwidth}{ @{\extracolsep{\fill}} cl @{\extracolsep{\fill}}}
 
 
-Sample ID: $if(id)$\texttt{$id$}$else$TBD$endif$ & Date of report: $if(date)$\texttt{$date$}$else$TBD$endif$\\
- Institution of origin: $if(institution)$\texttt{$institution$}$else$TBD$endif$ & Plate controls: $if(controls)$\texttt{PASS}$else$\cellcolor{red!50}\texttt{FAIL}$endif$\\
+Número de informe & $if(inf)$\texttt{$inf$}$else$TBD$endif$\\
+Nombre del paciente & $if(inf)$\texttt{$inf$}$else$TBD$endif$\\
+Fecha de realización & $if(date)$\texttt{$date$}$else$TBD$endif$\\
+Resultado & $if(classification)$\texttt{NEGATIVO}$else$\cellcolor{red!50}\texttt{POSITIVO}$endif$\\
 	\hline
 	\end{tabular*}
 }	
@@ -194,19 +172,22 @@ Sample ID: $if(id)$\texttt{$id$}$else$TBD$endif$ & Date of report: $if(date)$\te
 	
 
 \begin{center} 
-\Large \bfseries{\slshape{Resultados de la muestra $id$}}
+\Large \bfseries{\slshape{Reporte de diagnóstico de SAR-CoV-2 por la UNIPREC-FQ-UNAM}}
 \end{center}
 
-\vspace{20mm}
+\vspace{10mm}
 
-Se procesó muestra \textbf{$id$} de isopado nasofaríngeo del paciente para la detección de material genético del nuevo Coronavirus (2019-nCoV) utilizando dos sondas (N1, N2) específicas de la nucleocápside del virus y utilizando la técnica de PCR tiempo real (qPCR).
+\textbf{Datos adicionales del paciente:}
+Fecha de nacimiento: $if(birthday)$\texttt{$birthday$}$else$TBD$endif$
 \\
+Muestra: Hisopado nasofaríngeo XX
 
+\textbf{Resultados:}
 \begin{center}
 \begin{Form}
 \begin{tabular}{l}
 \hline
-Patógeno 2019-nCoV \\ \hline
+Gen Ciclo umbral (Ct) \\ \hline
 \ChoiceMenu[combo, width=3cm]{N1:}%
 {Detectado,No Detectado}\\
 \rowcolor[HTML]{EFEFEF} 

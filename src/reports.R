@@ -41,10 +41,11 @@ make_reports <- function(plot_list,
     the_sample_is <- names(smplsPlots)[i]    
     my_name <- names(smplsPlots)[i]
     mea_plote <- smplsPlots[i]
+    classification <- ifelse(result_table[i,"classification"] == "negative", "true", "")
     
     outpath <- paste0(outdir, "/", Sys.Date(), "_", my_name, ".pdf")
     outpath_inf <- paste0(outdir, "/", Sys.Date(), "_", my_name, "_results.pdf")
-    # render("template_inf.Rmd", output_file = outpath_inf)
+    render("template_inf.Rmd", output_file = outpath_inf)
     render("template_smpl.Rmd",output_file = outpath)})
   }else{
     my_r <- as.matrix(result_table)[,c("sample_name", "gen_e", "gen_r_nasa_p")]
