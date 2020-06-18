@@ -218,7 +218,7 @@ sample_curve.berlin.manual <- function(tdrn, sample_id, th_list, probes){
         scale_color_manual(values = c("red", "blue", "green"))+#, "blue")) + 
         geom_hline(yintercept = th_1, colour = "red", linetype = 2, alpha = 0.5) +
         geom_hline(yintercept = th_2, colour = "blue", linetype = 2, alpha = 0.5) +
-        geom_hline(yintercept = th_n3, colour = "green", linetype = 2, alpha = 0.5) +
+        geom_hline(yintercept = th_3, colour = "green", linetype = 2, alpha = 0.5) +
         ggtitle(label = sample_id)
     )
   plot(p)
