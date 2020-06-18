@@ -42,7 +42,8 @@ funcion_berlin_fromManualResults <- function(input_eds,
   
   has_allProbes <- CheckProbesEDS(eds = input_eds, my_probes = berlin_probes)
   if(has_allProbes == FALSE){
-    return("some_samples_are_missing_probes")
+    warning("some_samples_are_missing_probes")
+  #  return("some_samples_are_missing_probes")
   }
   
   ##############################################################################
