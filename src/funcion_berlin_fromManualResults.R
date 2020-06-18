@@ -35,7 +35,7 @@ funcion_berlin_fromManualResults <- function(input_eds,
   #define probes
   ########
   
-  berlin_probes <- c("Gen E", "Gen RNasaP")
+  berlin_probes <- c("Gen E", "Gen Rd.Rp", "Gen Rp")
   names(berlin_probes) <- berlin_probes
   
   ### check that all samples have all probes
