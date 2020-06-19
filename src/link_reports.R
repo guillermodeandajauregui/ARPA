@@ -5,11 +5,9 @@ individual_reports <-function(single_plots, qc_results, input_eds, output ){
   ################################################################################
 
   make_reports(plot_list = single_plots, 
-             result_table = qc_results$qc.values, 
+             result_table = test.results, 
              input = input_eds,
-             outdir = output, 
-             qc_results = qc_results$QC,
-             qc = F)
+             outdir = output)
 
 }
 
