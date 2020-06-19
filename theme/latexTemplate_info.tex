@@ -8,15 +8,12 @@ $else$
 $endif$
 
 \usepackage[table,xcdraw]{xcolor}
+\usepackage{tabularx}
+\usepackage{float}
 
-\usepackage{abstract}
-\renewcommand{\abstractname}{}    % clear the title
-\renewcommand{\absnamepos}{empty} % originally center
-\newcommand{\blankline}{\quad\pagebreak[2]}
-
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}} 
-\usepackage{longtable,booktabs}
+  \providecommand{\tightlist}{%
+    \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}} 
+  \usepackage{longtable,booktabs}
 
 \usepackage{parskip}
 \usepackage{titlesec}
@@ -38,14 +35,8 @@ $endif$
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \usepackage{lastpage}
-\renewcommand{\headrulewidth}{0.3pt}
-\renewcommand{\footrulewidth}{0.0pt} 
-\lhead{}
-\chead{}
-\rhead{\footnotesize $title$ -- $date$}
-\lfoot{}
-\cfoot{\small \thepage/\pageref*{LastPage}}
-\rfoot{}
+% \renewcommand{\headrulewidth}{0.3pt}
+% \renewcommand{\footrulewidth}{0.0pt} 
 
 \fancypagestyle{firststyle}
 {
@@ -54,10 +45,7 @@ $endif$
    \fancyfoot[C]{\small \thepage/\pageref*{LastPage}}
 }
 
-%\def\labelitemi{--}
-%\usepackage{enumitem}
-%\setitemize[0]{leftmargin=25pt}
-%\setenumerate[0]{leftmargin=25pt}
+
 
 
 
@@ -138,41 +126,43 @@ $endif$
 \SetWatermarkText{\begin{minipage}{26cm}\centering \vskip 10pt \includegraphics{theme/InmegenWatermark.pdf} \end{minipage}}
 \SetWatermarkAngle{0}
 
+\rhead{Página \thepage \hspace{1pt} de \pageref{LastPage}}
 
 \begin{document}  
-
+.
 \thispagestyle{plain} 
-\pagenumbering{gobble}
 
-\vspace*{\fill}
-
-$if(report)$
+%\vspace*{\fill}
+\vspace{30mm}
 \begin{center} 
-{\fontfamily{cmss}\selectfont
+%{\fontfamily{cmss}\selectfont
 \huge \bfseries{\scshape{Detencción de SARS-CoV-2}}\\
 \normalsize \bfseries{\scshape{mediante RT-PCR en tiempo real}}
-}
+%}
 \end{center}
-$endif$
 
-\vspace{2mm}
-
-{\fontfamily{cmss}\selectfont
-	\noindent \begin{tabular*}{\textwidth}{ @{\extracolsep{\fill}} cl @{\extracolsep{\fill}}}
-
-
-Número de informe & $if(inf)$\texttt{$inf$}$else$TBD$endif$\\
-Nombre del paciente & $if(inf)$\texttt{$inf$}$else$TBD$endif$\\
-Fecha de realización & $if(date)$\texttt{$date$}$else$TBD$endif$\\
-Resultado & $if(classification)$\texttt{NEGATIVO}$else$\cellcolor{red!50}\texttt{POSITIVO}$endif$\\
-	\hline
-	\end{tabular*}
-}	
 \vspace{10mm}
-	
+
+
+% Please add the following required packages to your document preamble:
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+{\fontfamily{cmss}\selectfont
+\begin{table}[H]
+\begin{tabular}{|
+>{\columncolor[HTML]{C0C0C0}}p{4cm} |p{13cm}|}
+\hline
+Número   de informe    & $if(ninf)$\texttt{$ninf$}$else$TBD$endif$ \\ \hline
+Nombre   del paciente  & $if(pname)$\texttt{$pname$}$else$TBD$endif$ \\ \hline
+Fecha   de realización & $if(date)$\texttt{$date$}$else$TBD$endif$\\ \hline
+Resultado              & $if(classification)$\texttt{$classification$}$else$TBD$endif$\\ \hline
+\end{tabular}
+\end{table}
+}	
+\vspace{5mm}
 
 \begin{center} 
-\Large \bfseries{\slshape{Reporte de diagnóstico de SAR-CoV-2 por la UNIPREC-FQ-UNAM}}
+\Large \bfseries{Reporte de diagnóstico de SAR-CoV-2 por la UNIPREC-FQ-UNAM}
 \end{center}
 
 \vspace{10mm}
@@ -183,52 +173,42 @@ Fecha de nacimiento: $if(birthday)$\texttt{$birthday$}$else$TBD$endif$
 Muestra: Hisopado nasofaríngeo XX
 
 \textbf{Resultados:}
-\begin{center}
-\begin{Form}
-\begin{tabular}{l}
-\hline
-Gen Ciclo umbral (Ct) \\ \hline
-\ChoiceMenu[combo, width=3cm]{N1:}%
-{Detectado,No Detectado}\\
-\rowcolor[HTML]{EFEFEF} 
-\ChoiceMenu[combo, width=3cm]{N2:}%
-{Detectado,No Detectado}\\
-\ChoiceMenu[combo, width=3cm]{RP:}%
-{Detectado,No Detectado}\\ \hline
-\end{tabular}
-\end{Form}
-\end{center}
-
 \vspace{5mm}
-
-\begin{Form}
-Con base en los resultados de las pruebas moleculares \ChoiceMenu[combo]{}{Sí,No} se encontró evidencia de infección por coronavirus.
-\end{Form}
-
-
 
 $body$
 
+\vspace{15mm}
 
-\vspace{50mm}
+Para cualquier aclaración a este respecto comunicarse con la Dra. Maricarmen Quirasco Baruch.
+Teléfono de contacto: 5554180481. Correo-e:  quirabma@unam.mx
 
 
 {\fontfamily{cmss}\selectfont
-\noindent \begin{tabular*}{\textwidth}{ @{\extracolsep{\fill}} lr @{\extracolsep{\fill}}}
+\begin{tabular}[c]{|p{2cm}|p{7cm}|p{8cm}|}
 \hline
-E-mail: $if(email)$\texttt{$email$}$else$TBD$endif$ & Web: $if(web)$\href{http://$web$}{\tt $web$}$else$TBD$endif$  \end{tabular*}
+  & \textbf{Nombre} & \textbf{Firma} \\
+\hline
+\textbf{Elaboró} & \begin{tabular}[c]{@{}l@{}}M   en C. Cindy Adriana Estrada Hernández \\ M   en C. María Helena García Rodríguez \\ Dr.   Erick Nieto Patlán\end{tabular}  &  \\
+\hline
+\textbf{Revisó} & Dra.   Ana Rosa Muñoz Duarte  &  \\
+\hline
+\textbf{Autorizó} & \begin{tabular}[c]{@{}l@{}}M   en C María Isabel Gracia Mora  \\ Dra.   Maricarmen Quirasco Baruch\end{tabular} & \\
+\hline
+\end{tabular}
 }
+
+% {\fontfamily{cmss}\selectfont
+% \begin{tabularx}{\textwidth}{|l|l|c|}
+% \hline
+%   & \textbf{Nombre} & \textbf{Firma} \\
+% \hline
+% \textbf{Elaboró} & \begin{tabular}[c]{@{}l@{}}M   en C. Cindy Adriana Estrada Hernández \\ M   en C. María Helena García Rodríguez \\ Dr.   Erick Nieto Patlán\end{tabular}  &  \\
+% \hline
+% \textbf{Revisó} & Dra.   Ana Rosa Muñoz Duarte  &  \\
+% \hline
+% \textbf{Autorizó} & \begin{tabular}[c]{@{}l@{}}M   en C María Isabel Gracia Mora  \\ Dra.   Maricarmen Quirasco Baruch\end{tabular} & \\
+% \hline
+% \end{tabularx}
+% }
 
 \end{document}
-
-\makeatletter
-\def\@maketitle{%
-  \newpage
-%  \null
-%  \vskip 2em%
-%  \begin{center}%
-  \let \footnote \thanks
-    {\fontsize{18}{20}\selectfont\raggedright  \setlength{\parindent}{0pt} \@title \par}%
-}
-%\fi
-\makeatother

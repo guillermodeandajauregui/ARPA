@@ -23,40 +23,57 @@ library("rmarkdown")
 
 ######make_reports
 
-make_reports <- function(plot_list, 
-                         result_table,
-                         input,
-                         outdir, 
-                         qc_results,
-                         qc = F){
-  plate <- stringr::str_remove(string = basename(input), pattern = ".eds")
-  qcplate <- ifelse(qc_results == "PASS", "true", "")
-  qcs <- which(names(plot_list) %in% c("NTC", "PTC", "CRE"))
-  smpls <- which(!(names(plot_list) %in% c("NTC", "PTC", "CRE")))
-  smplsPlots <- plot_list[smpls]
-  #makes reports from a list of plots and some result table
-  if(qc==F){
-  lapply(seq_along(smplsPlots), function(i){
+make_reports <- function(plot_list,
+                        result_table,
+                        input,
+                        outdir){
+  lapply(seq_along(result_table$sample_name), function(i){
     
-    the_sample_is <- names(smplsPlots)[i]    
-    my_name <- names(smplsPlots)[i]
-    mea_plote <- smplsPlots[i]
-    classification <- ifelse(result_table[i,"classification"] == "negative", "true", "")
-    
-    outpath <- paste0(outdir, "/", Sys.Date(), "_", my_name, ".pdf")
-    outpath_inf <- paste0(outdir, "/", Sys.Date(), "_", my_name, "_results.pdf")
+    the_sample_is <- result_table$sample_name[i]
+    my_table <- data.frame(gen=c("E", "RdRp", "Rnasa P"), cycle = (t(result_table[i,])[2:4]))
+    my_table[1,2] = ifelse(my_table[1,2] == Inf, "S/A", my_table[1,2])
+    my_table[2,2] = ifelse(my_table[2,2] == Inf, "S/A", my_table[2,2])
+    my_table[3,2] = ifelse(my_table[3,2] == Inf, paste("\\cellcolor{red!50}{S/A}", sep = ""), my_table[3,2])
+    classification <- result_table[i,"classification"]
+    outpath_inf <- paste0(outdir, "/", the_sample_is, "_",Sys.Date(), "_informe.pdf")
     render("template_inf.Rmd", output_file = outpath_inf)
-    render("template_smpl.Rmd",output_file = outpath)})
-  }else{
-    my_r <- as.matrix(result_table)[,c("sample_name", "gen_e", "gen_r_nasa_p")]
-    my_r[grep("Inf", my_r)] <- "45+"
-    ntc <- grep(pattern = "NTC", x = names(plot_list))
-  ptc <- grep(pattern = "PTC", x = names(plot_list))
-  exc <- grep(pattern = "CRE", x = names(plot_list))
-    outpath <- paste0(outdir, "/", Sys.Date(), "_", plate, ".pdf")
-    render("template_qc.Rmd",output_file = outpath)
-  }
+  })
 }
+
+# make_reports <- function(plot_list, 
+#                          result_table,
+#                          input,
+#                          outdir, 
+#                          qc_results,
+#                          qc = F){
+#   plate <- stringr::str_remove(string = basename(input), pattern = ".eds")
+# #  qcplate <- ifelse(qc_results == "PASS", "true", "")
+#   #qcs <- which(names(plot_list) %in% c("NTC", "PTC", "CRE"))
+#   #smpls <- which(!(names(plot_list) %in% c("NTC", "PTC", "CRE")))
+#   #smplsPlots <- plot_list[smpls]
+#   #makes reports from a list of plots and some result table
+#   if(qc==F){
+#   lapply(seq_along(smplsPlots), function(i){
+    
+#     the_sample_is <- names(smplsPlots)[i]    
+#     my_name <- names(smplsPlots)[i]
+#     mea_plote <- smplsPlots[i]
+#     classification <- ifelse(result_table[i,"classification"] == "negative", "true", "")
+    
+#     outpath <- paste0(outdir, "/", Sys.Date(), "_", my_name, ".pdf")
+#     outpath_inf <- paste0(outdir, "/", Sys.Date(), "_", my_name, "_results.pdf")
+#     render("template_inf.Rmd", output_file = outpath_inf)
+#     render("template_smpl.Rmd",output_file = outpath)})
+#   }else{
+#     my_r <- as.matrix(result_table)[,c("sample_name", "gen_e", "gen_r_nasa_p")]
+#     my_r[grep("Inf", my_r)] <- "45+"
+#     ntc <- grep(pattern = "NTC", x = names(plot_list))
+#   ptc <- grep(pattern = "PTC", x = names(plot_list))
+#   exc <- grep(pattern = "CRE", x = names(plot_list))
+#     outpath <- paste0(outdir, "/", Sys.Date(), "_", plate, ".pdf")
+#     render("template_qc.Rmd",output_file = outpath)
+#   }
+# }
 
 ## Extracts the plaque processing date from the sample INMEGEN ID
 getDecade <- function(idinmegen){
