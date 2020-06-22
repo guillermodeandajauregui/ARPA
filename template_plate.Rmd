@@ -52,7 +52,7 @@ cat("\\textbf{Anexo.} Curvas $\\Delta\\mathrm{Rn}$ vs. número de ciclo para la 
 ```  
 \vspace{0.5cm}
 
-```{r , message = FALSE, echo = F, results='hide', eval=sum(!(test.results$classification %in% "negativo")) >= 1, warning=F, fig.width=6, fig.height=5, fig.align='center'}
+```{r , message = FALSE, echo = F, results='hide', eval=sum(!(test.results$classification %in% "negativo")) >= 1, warning=F, fig.width=6, fig.height=6, fig.align='center'}
 
 plot_list[which(!(result_table$classification %in% "negativo"))]
 ```
