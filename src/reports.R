@@ -37,6 +37,7 @@ make_reports <- function(plot_list,
         my_table[3,2] = ifelse(my_table[3,2] == Inf, paste("\\cellcolor{red!50}{S/A}", sep = ""), my_table[3,2])
         classification <- result_table[i,"classification"]
         outpath_inf <- paste0(outdir, "/", the_sample_is, "_",Sys.Date(), "_informe.pdf")
+        if(file.exists(outpath_inf)){file.remove(outpath_inf)}
         render("template_inf.Rmd", output_file = outpath_inf)
       })
   }else{
@@ -55,6 +56,7 @@ make_reports <- function(plot_list,
     classification <- "Ver tabla de resultados"
     plate <- stringr::str_remove(string = basename(input), pattern = ".eds")
     outpath_plate <- paste0(outdir, "/", plate, "_",Sys.Date(), "_inf_placa.pdf")
+    if(file.exists(outpath_plate)){file.remove(outpath_plate)}
     render("template_plate.Rmd", output_file = outpath_plate)
   }
 }
