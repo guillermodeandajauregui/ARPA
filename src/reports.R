@@ -26,19 +26,41 @@ library("rmarkdown")
 make_reports <- function(plot_list,
                         result_table,
                         input,
-                        outdir){
-  lapply(seq_along(result_table$sample_name), function(i){
-    
-    the_sample_is <- result_table$sample_name[i]
-    my_table <- data.frame(gen=c("E", "RdRp", "Rnasa P"), cycle = (t(result_table[i,])[2:4]))
-    my_table[1,2] = ifelse(my_table[1,2] == Inf, "S/A", my_table[1,2])
-    my_table[2,2] = ifelse(my_table[2,2] == Inf, "S/A", my_table[2,2])
-    my_table[3,2] = ifelse(my_table[3,2] == Inf, paste("\\cellcolor{red!50}{S/A}", sep = ""), my_table[3,2])
-    classification <- result_table[i,"classification"]
-    outpath_inf <- paste0(outdir, "/", the_sample_is, "_",Sys.Date(), "_informe.pdf")
-    render("template_inf.Rmd", output_file = outpath_inf)
-  })
+                        outdir,
+                        sample = TRUE){
+  if(sample == TRUE){
+      lapply(seq_along(result_table$sample_name), function(i){
+        the_sample_is <- result_table$sample_name[i]
+        my_table <- data.frame(gen=c("E", "RdRp", "Rnasa P"), cycle = (t(result_table[i,])[2:4]))
+        my_table[1,2] = ifelse(my_table[1,2] == Inf, "S/A", my_table[1,2])
+        my_table[2,2] = ifelse(my_table[2,2] == Inf, "S/A", my_table[2,2])
+        my_table[3,2] = ifelse(my_table[3,2] == Inf, paste("\\cellcolor{red!50}{S/A}", sep = ""), my_table[3,2])
+        classification <- result_table[i,"classification"]
+        outpath_inf <- paste0(outdir, "/", the_sample_is, "_",Sys.Date(), "_informe.pdf")
+        render("template_inf.Rmd", output_file = outpath_inf)
+      })
+  }else{
+    my_table <- cbind(result_table, obs = rep(x = "---", times = dim(result_table)[1]))
+    my_table$classification[which(my_table$classification %in% "negativo")] <- "NEGATIVO"
+    my_table$classification[which(my_table$classification %in% "positivo")] <- "\\textbf{POSITIVO}"
+    for(i in which(my_table$classification %in% "indeterminado")){
+        if(my_table$"Gen E"[i] != Inf & my_table$"Gen Rd.Rp"[i] != Inf){
+            my_table$obs[i] <- "Amplificación tardía en ambos genes marcadorers"
+      }else{my_table$obs[i] <- "Amplificación tardía de solo un gen marcador"}
+        }
+    my_table$classification[which(my_table$classification %in% "indeterminado")] <- "\\textbf{DUDOSO}"
+    my_table$"Gen E"[my_table$"Gen E" == Inf] <- "S/A"
+    my_table$"Gen Rd.Rp"[my_table$"Gen Rd.Rp" == Inf] <- "S/A"
+    pname <- paste(sort(result_table$sample_name)[1], "a", sort(result_table$sample_name)[length(results_list$test_results$sample_name)], sep = " ")
+    classification <- "Ver tabla de resultados"
+    plate <- stringr::str_remove(string = basename(input), pattern = ".eds")
+    outpath_plate <- paste0(outdir, "/", plate, "_",Sys.Date(), "_inf_placa.pdf")
+    render("template_plate.Rmd", output_file = outpath_plate)
+  }
 }
+
+
+
 
 # make_reports <- function(plot_list, 
 #                          result_table,

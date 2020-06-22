@@ -5,7 +5,7 @@ output:
     fig_caption: yes
     latex_engine: pdflatex
     template: theme/latexTemplate_info.tex
-geometry: margin=0.7in
+geometry: left=1.5cm, right=1.5cm, top=5cm
 papersize: letterpaper
 
 

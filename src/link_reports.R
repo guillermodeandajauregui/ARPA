@@ -1,31 +1,24 @@
 
-individual_reports <-function(single_plots, qc_results, input_eds, output ){
+individual_reports <-function(results_list, output){
   ################################################################################
   #Write individual reports
   ################################################################################
 
-  make_reports(plot_list = results_list$single_plots, 
-             result_table = results_list$test.results, 
-             input = input_eds,
-             outdir = output)
+	make_reports(result_table = results_list$test_results, 
+				outdir = output,
+				sample = TRUE)
 
 }
 
-# booklet_report <- function(test_results, qc_results, input_eds, output){
-  
-#  ################################################################################ 
-#  #Get the plate name
-#  ################################################################################
+booklet_report <- function(results_list, input_eds, output){
 
-#  plate <- stringr::str_remove(string = basename(input_eds), pattern = ".eds")
+ ################################################################################
+ #Write plate Booklet
+ ################################################################################
 
-#  ################################################################################
-#  #Write plate Booklet
-#  ################################################################################
-
-#  test_diagnosis <- cbind(plate, test_results)
-
-#  plateBooklet(results = test_diagnosis,
-#              qc_results = qc_results,
-#              outdir = output)
-# }
+	make_reports(plot_list = results_list$single_plots, 
+				result_table = results_list$test_results, 
+				input = input_eds,
+				outdir = output,
+				sample = FALSE)
+}

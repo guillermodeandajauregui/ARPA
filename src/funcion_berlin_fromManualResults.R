@@ -163,7 +163,7 @@ funcion_berlin_fromManualResults <- function(input_eds,
     mutate(classification = case_when((`Gen E` <= 38 & `Gen Rd.Rp` <= 38 &  `Gen Rp` <= 38) ~ "positivo",
                                       (`Gen E` > 38 & `Gen Rd.Rp` > 38 & `Gen Rp` <= 38) ~ "negativo", 
                                       `Gen Rp` > 38 ~ "invalido", 
-                                      TRUE ~ "indederminado"
+                                      TRUE ~ "indeterminado"
                                       
                                       )
            )
