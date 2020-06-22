@@ -123,22 +123,22 @@ ui <- fluidPage(
                  dataTableOutput(outputId = 'run_ready')
                )
       ),
-      tabPanel(title = "Curvas QC",
-               value = "curves", 
-               h3(textOutput("caption1")),
-               plotOutput("plot1"),
-               br(),
-               br(),
-               br(),
-               h2(textOutput("caption2")),
-               plotOutput("plot2"),
-               br(),
-               br(),
-               br(),
-               h2(textOutput("caption3")),
-               plotOutput("plot3")
-               #dataTableOutput(outputId = 'summary_table_gene')
-      ), 
+      # tabPanel(title = "Curvas QC",
+      #          value = "curves", 
+      #          h3(textOutput("caption1")),
+      #          plotOutput("plot1"),
+      #          br(),
+      #          br(),
+      #          br(),
+      #          h2(textOutput("caption2")),
+      #          plotOutput("plot2"),
+      #          br(),
+      #          br(),
+      #          br(),
+      #          h2(textOutput("caption3")),
+      #          plotOutput("plot3")
+      #          #dataTableOutput(outputId = 'summary_table_gene')
+      # ), 
       tabPanel(title = "Curvas muestra",
                value = "samples", 
                
@@ -290,21 +290,20 @@ server <- function(input, output, session) {
   output$run_ready <- renderDataTable({
     table_out()
     
-    qc <- table_out()$qc_results
-    
-    if (qc$QC != "PASS"){
-      datatable(table_out()$test_results) %>% 
-        formatStyle('N1', 
-                    target='row',
-                    backgroundColor = "yellow" )
-    }else{
+    # qc <- table_out()$qc_results
+    # 
+    # if (qc$QC != "PASS"){
+    #   datatable(table_out()$test_results) %>% 
+    #     formatStyle('N1', 
+    #                 target='row',
+    #                 backgroundColor = "yellow" )
+    # }else{
       datatable(table_out()$test_results) %>% 
         formatStyle( 'classification', 
                      target = 'row',
-                     backgroundColor = styleEqual(c("positive", "negative"),
-                                                  c('pink', 'aquamarine')) )
-    }
-  })
+                     backgroundColor = styleEqual(c("positivo", "negativo", "invalido", "indeterminado"),
+                                                  c('pink', 'aquamarine', "grey", "grey")) )
+    })
   
   
   ################################################################################
