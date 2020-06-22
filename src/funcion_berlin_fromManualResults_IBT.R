@@ -129,7 +129,11 @@ funcion_berlin_fromManualResults <- function(input_eds,
   
   test.results <- 
     test.samples %>% 
-    mutate(classification = ifelse(gen_e <= 38, "positive", "negative" ))
+    mutate(classification = case_when(gen_e <= 38 & gen_r_nasa_p <= 35 ~ "Positivo",
+                                      gen_e > 38 & gen_r_nasa_p <= 35 ~ "Negativo",
+                                      gen_r_nasa_p > 35 ~ "Repetir"
+                                      )
+           )
   
   ################################################################################
   #Plot preparation
