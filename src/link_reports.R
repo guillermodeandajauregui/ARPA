@@ -4,13 +4,12 @@ individual_reports <-function(single_plots, qc_results, input_eds, output ){
   #Write individual reports
   ################################################################################
 
-  make_reports(plot_list = single_plots, 
-             result_table = test.results, 
+  make_reports(plot_list = results_list$single_plots, 
+             result_table = results_list$test.results, 
              input = input_eds,
              outdir = output)
 
 }
-
 
 # booklet_report <- function(test_results, qc_results, input_eds, output){
   
