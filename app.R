@@ -13,11 +13,8 @@ library(shinyFiles)
 library(DT)
 
 
-source("function_app_qPCR_cdc.R")
-source("function_plate_conf.R")
 source("src/functions.R")
-#source("src/getVolumes.R")
-source("src/funcion_berlin_fromManualResults.R")
+source("src/funcion_berlin_fromManualResults_IBT.R")
 
 #input <- c("data/Procolo_COVID-19_Prueba1_4Abr20.eds")
 #output <- c("results/")
@@ -277,7 +274,7 @@ server <- function(input, output, session) {
       datatable(table_out()$test_results) %>% 
         formatStyle( 'classification', 
                      target = 'row',
-                     backgroundColor = styleEqual(c("positive", "negative"),
+                     backgroundColor = styleEqual(c("Positivo", "Negativo"),
                                                   c('pink', 'aquamarine')) )
     }
   })
