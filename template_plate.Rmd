@@ -43,16 +43,16 @@ kable(my_table, row.names = FALSE,
 			add_footnote("S/A = Sin amplificación", notation = "none")
 ```  
 
-```{r , message = FALSE, echo = F, results='hide', results='asis', eval=sum(!(test.results$classification %in% "negativo")) >= 1, warning=F}
+```{r , message = FALSE, echo = F, results='hide', results='asis', eval=sum(!(result_table$classification %in% "negativo")) >= 1, warning=F}
 cat("\\pagebreak")
 ```  
 
-```{r , message = FALSE, echo = F, results='asis', eval=sum(!(test.results$classification %in% "negativo")) >= 1, warning=F}
+```{r , message = FALSE, echo = F, results='asis', eval=sum(!(result_table$classification %in% "negativo")) >= 1, warning=F}
 cat("\\textbf{Anexo.} Curvas $\\Delta\\mathrm{Rn}$ vs. número de ciclo para la detección de los genes E, RdRp y Rp para la(s) muestra(s) donde hubo señal de amplificación.")
 ```  
 \vspace{0.5cm}
 
-```{r , message = FALSE, echo = F, results='hide', eval=sum(!(test.results$classification %in% "negativo")) >= 1, warning=F, fig.width=6, fig.height=6, fig.align='center'}
+```{r , message = FALSE, echo = F, results='hide', eval=sum(!(result_table$classification %in% "negativo")) >= 1, warning=F, fig.width=6, fig.height=6, fig.align='center'}
 
 plot_list[which(!(result_table$classification %in% "negativo"))]
 ```
