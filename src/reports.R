@@ -37,14 +37,15 @@ make_reports <- function(plot_list,
   smplsPlots <- plot_list[smpls]
   #makes reports from a list of plots and some result table
   if(qc==F){
+  if(file.exists("./temp")){unlink("temp/", recursive = TRUE)}
   dir.create("./temp")
   lapply(seq_along(smplsPlots), function(i){
         the_sample_is <- names(smplsPlots)[i]    
         my_name <- names(smplsPlots)[i]
         mea_plote <- smplsPlots[i]
-        outpath <- paste0("temp", "/", Sys.Date(), "_", my_name, ".smpl.pdf")
+        outpath <- paste0("./temp", "/", Sys.Date(), "_", my_name, ".smpl.pdf")
         render("template_smpl.Rmd",output_file = outpath)})
-  pdfs <- dir("temp", full.names = TRUE)
+  pdfs <- dir("./temp", full.names = TRUE)
   outpath <- paste0(outdir, "/", Sys.Date(), "_", plate, ".smpls.pdf")
   pdf_combine(pdfs, output = outpath)
   unlink("temp/", recursive = TRUE)
