@@ -392,11 +392,11 @@ server <- function(input, output, session) {
     output <- output_dir()
     
     #plots <- results$single_plots
-    plots <- results$single_plots[input$samples_report]
+    #plots <- results$single_plots[input$samples_report]
+    test_results = subset(results$test_results, sample_name %in% input$samples_report)
+    
     withProgress(message = 'imprimiendo reportes individuales', value = 0.3, {
-      individual_reports(single_plots = plots, 
-                         qc_results = results$qc_results, 
-                         input_eds = input_eds, 
+      individual_reports(result_table = test_results, 
                          output = paste(output, "/", sep="")
       )
     })
@@ -420,9 +420,11 @@ server <- function(input, output, session) {
     output <- output_dir()
     
     test_results = subset(results$test_results, sample_name %in% input$samples_report)
+    plots <- results$single_plots[input$samples_report]
+    
     withProgress(message = 'imprimiendo reporte de la placa', value = 0.3, {
-      booklet_report(test_results = test_results, 
-                     qc_results = results$qc_results, 
+      booklet_report(plot_list = plots, 
+                     result_table = test_results, 
                      input_eds= input_eds, 
                      output = paste(output, "/", sep="")
       )

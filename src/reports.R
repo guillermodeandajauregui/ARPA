@@ -51,7 +51,7 @@ make_reports <- function(plot_list,
     my_table$classification[which(my_table$classification %in% "indeterminado")] <- "\\textbf{DUDOSO}"
     my_table$"Gen E"[my_table$"Gen E" == Inf] <- "S/A"
     my_table$"Gen Rd.Rp"[my_table$"Gen Rd.Rp" == Inf] <- "S/A"
-    pname <- paste(sort(result_table$sample_name)[1], "a", sort(result_table$sample_name)[length(results_list$test_results$sample_name)], sep = " ")
+    pname <- paste(sort(result_table$sample_name)[1], "a", sort(result_table$sample_name)[length(result_table$sample_name)], sep = " ")
     classification <- "Ver tabla de resultados"
     plate <- stringr::str_remove(string = basename(input), pattern = ".eds")
     outpath_plate <- paste0(outdir, "/", plate, "_",Sys.Date(), "_inf_placa.pdf")

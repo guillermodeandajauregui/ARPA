@@ -157,7 +157,7 @@ funcion_berlin_fromManualResults <- function(input_eds,
   
   #do results for samples 
   
-  test.results <- 
+  test_results <- 
     test.samples %>% 
     #mutate(classification = ifelse(gen_e <= 38, "positive", "negative" ))
     mutate(classification = case_when((`Gen E` <= 38 & `Gen Rd.Rp` <= 38 &  `Gen Rp` <= 38) ~ "positivo",
@@ -225,7 +225,7 @@ funcion_berlin_fromManualResults <- function(input_eds,
   ################################################################################
   
   results_list <- list(
-    test_results = test.results,
+    test_results = test_results,
     qc_results = qc_results, 
     single_plots = single_plots
   )
