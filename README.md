@@ -62,12 +62,12 @@ A summary report (in PDF format) with the classification per sample and the meta
 
 ![plateBooklet](https://github.com/guillermodeandajauregui/ARPA/blob/master/images/report-plateBooklet.png?raw=true)
 
-An individual report (in PDF format) per sample is generated. It contains the amplificacion curves and classification per sample.
+An individual report (in PDF format) per sample is generated. It contains the amplification curves and plate QC result.
 
 ![sample](https://github.com/guillermodeandajauregui/ARPA/blob/master/images/report-sample.png?raw=true)
 
 
-A quality report with the quality assesment and the control amplification curves is generated
+A quality report of the plate with the quality assesment and the control amplification curves is generated
 
 ![qcplate](https://github.com/guillermodeandajauregui/ARPA/blob/master/images/report-qcplate.png?raw=true)
 
