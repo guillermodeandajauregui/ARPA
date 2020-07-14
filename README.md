@@ -40,7 +40,7 @@ The curves for each sample are assesed to determine the status of each sample
 
 **It shows the summary table with the status of each sample of the experiment**
 
-![alt text](https://github.com/guillermodeandajauregui/ARPA/blob/master/images/web-summary.png?raw=true)
+![alt text](https://github.com/guillermodeandajauregui/ARPA/blob/master/images/web-summary.pdf?raw=true)
 
 
 **It also allow the visual inspection of the amplification curves per sample**
