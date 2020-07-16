@@ -22,6 +22,8 @@ ARPA has several functionalities:
 
 The values of the fluorescence per cycle are retrieved from the files exportes by the RT-PCR equipment. The curves are evaluated. A correct amplification should behave as a sigmoid curve and cross a fluroescence threshold before a chosen cycle.
 
+![alt text](https://github.com/guillermodeandajauregui/ARPA/blob/master/images/Presentacion_20200522.png?raw=true)
+
 All control samples are evaluated to determine the quality of the experiment.
 
 **imagen**
