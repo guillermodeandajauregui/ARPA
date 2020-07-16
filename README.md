@@ -24,14 +24,9 @@ The values of the fluorescence per cycle are retrieved from the files exportes b
 
 ![alt text](https://github.com/guillermodeandajauregui/ARPA/blob/master/images/Presentacion_20200522.png?raw=true)
 
-All control samples are evaluated to determine the quality of the experiment.
+- All control samples are evaluated to determine the quality of the experiment.
 
-**imagen**
-
-The curves for each sample are assesed to determine the status of each sample
-
-**imagen**
-
+- The curves for each sample are assesed to determine the status of each sample
 
 ### FRIENDLY WEB-INTERFACE TO LOOK AT THE AMPLIFICATION CURVES AND THE RESULTS OF THE EXPERIMENT
 
