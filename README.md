@@ -8,6 +8,8 @@ ARPA is designed to help the specialized staff working on the detection of COVID
 
 ARPA has been designed in a modular setting. It allows the automatic analysis of the amplification curves, the visual inspection of the results via a friendly web-interface and the generation of pdf reports with the results from the experiment.
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/LsDgGR4Cvl8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ARPA has several functionalities:
 
  - It generates and analyzes the amplification curves from the fluorescence measured during a RT-PCR experiment
