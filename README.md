@@ -8,8 +8,6 @@ ARPA is designed to help the specialized staff working on the detection of COVID
 
 ARPA has been designed in a modular setting. It allows the automatic analysis of the amplification curves, the visual inspection of the results via a friendly web-interface and the generation of pdf reports with the results from the experiment.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/LsDgGR4Cvl8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
 ARPA has several functionalities:
 
  - It generates and analyzes the amplification curves from the fluorescence measured during a RT-PCR experiment
@@ -19,6 +17,11 @@ ARPA has several functionalities:
  - It provides a friendly web-interface to look at a summary table with the results of the experiment
  - It generates pdf reports with the amplification curves and the status per each sample
  - It generates a pdf report with a summary report with the results of the experiment
+
+## Video demostration
+
+[![video ARPA](https://github.com/guillermodeandajauregui/ARPA/blob/master/images/video_ARPA.png?raw=true)](https://youtu.be/LsDgGR4Cvl8) 
+ 
 
 ### ATUOMATIC ASSESMENT OF THE EXPERIMENT'S QUALITY AND OF THE AMPLIFICATION CURVES 
 
@@ -71,9 +74,5 @@ A quality report of the plate with the quality assesment and the control amplifi
 ![qcplate](https://github.com/guillermodeandajauregui/ARPA/blob/master/images/report-qcplate.png?raw=true)
 
 
- 
-*For more information, a summary video can be found at:*
-
- https://drive.google.com/file/d/1SuLN44O7MULU4wht42cfPOu3PWVCWRRK/view?usp=sharing
- 
+  
  
