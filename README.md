@@ -18,7 +18,7 @@ ARPA has several functionalities:
  - It generates pdf reports with the amplification curves and the status per each sample
  - It generates a pdf report with a summary report with the results of the experiment
 
-## Video demostration
+## DEMO VIDEO
 
 [![video ARPA](https://github.com/guillermodeandajauregui/ARPA/blob/master/images/video_ARPA.png?raw=true)](https://youtu.be/LsDgGR4Cvl8) 
  
