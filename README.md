@@ -19,9 +19,8 @@ ARPA has several functionalities:
  - It generates a pdf report with a summary report with the results of the experiment
 
 ## DEMO VIDEO
-
-[![video ARPA](https://github.com/guillermodeandajauregui/ARPA/blob/master/images/video_ARPA.png?raw=true)](https://youtu.be/LsDgGR4Cvl8) 
  
+<a href="https://youtu.be/LsDgGR4Cvl8" target="_blank" rel="ARPA Demo">![ARPA DEMO](https://github.com/guillermodeandajauregui/ARPA/blob/master/images/video_ARPA.png?raw=true)</a>
 
 ### ATUOMATIC ASSESMENT OF THE EXPERIMENT'S QUALITY AND OF THE AMPLIFICATION CURVES 
 
