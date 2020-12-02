@@ -76,18 +76,10 @@ funcion_berlin <- function(input_eds,
   
   test.results <- 
     test.samples %>% 
-    mutate(classification1 = case_when(gen_e <= 38 & gen_r_nasa_p <= 35 ~ "Positivo",
+    mutate(classification = case_when(gen_e <= 38 & gen_r_nasa_p <= 35 ~ "Positivo",
                                       gen_e > 38 & gen_r_nasa_p <= 35 ~ "Negativo",
                                       gen_r_nasa_p > 35 ~ "Repetir"
-    )) %>% 
-    mutate(classification2 = case_when(gen_e <= 38  ~ "positive",
-                                       gen_e < 99 ~ "edge_positive",
-                                       gen_e  == Inf  ~ "inconclusive_LowAmp",
-                                       gen_e == 99 & gen_r_nasa_p <= 35 ~ "negative",
-                                       gen_e == 99 & gen_r_nasa_p < 99  ~ "edge_negative",
-                                       gen_e == 99 & gen_r_nasa_p >= 99 ~ "invalid"
-    ))
-      
+    )) 
 
   #############
   #list of single figure plots
@@ -103,19 +95,19 @@ funcion_berlin <- function(input_eds,
     )
   })
   
-  make_reports(plot_list = single_plots, 
-               result_table = qc_results$qc.values[,1:3], 
-               input = input_eds,
-               outdir = output, 
-               qc_results = qc_results$QC,
-               qc = F)
+  #make_reports(plot_list = single_plots, 
+  #             result_table = qc_results$qc.values[,1:3], 
+  #             input = input_eds,
+  #             outdir = output, 
+  #             qc_results = qc_results$QC,
+  #             qc = F)
   
-  make_reports(plot_list = single_plots, 
-               result_table = qc_results$qc.values[,1:3], 
-               input = input_eds,
-               outdir = output, 
-               qc_results = qc_results$QC,
-               qc = T)
+  #make_reports(plot_list = single_plots, 
+  #             result_table = qc_results$qc.values[,1:3], 
+  #             input = input_eds,
+  #             outdir = output, 
+  #             qc_results = qc_results$QC,
+  #             qc = T)
   
   ################################################################################
   #Create list output

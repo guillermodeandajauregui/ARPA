@@ -14,7 +14,6 @@ library(DT)
 
 
 source("src/functions.R")
-source("src/funcion_berlin_fromManualResults_IBT.R")
 source("src/funcion_berlin.R")
 
 #input <- c("data/Procolo_COVID-19_Prueba1_4Abr20.eds")
@@ -233,7 +232,7 @@ server <- function(input, output, session) {
                     backgroundColor = "yellow" )
     }else{
       datatable(table_out()$test_results) %>% 
-        formatStyle( 'classification1', 
+        formatStyle( 'classification', 
                      target = 'row',
                      backgroundColor = styleEqual(c("Positivo", "Negativo"),
                                                   c('pink', 'aquamarine')) )
