@@ -184,9 +184,10 @@ sample_curve.cdc <- function(tdrn, sample_id){
 
 
 
-
+#### MODIFICATION
+#### REMOVE THRESHOLDS
 ##### sample_curve.berlin.manual
-sample_curve.berlin.manual <- function(tdrn, sample_id, th_list, probes){
+sample_curve.berlin.manual <- function(tdrn, sample_id, probes){
   #makes a curve plot with the three cdc probes for a single sample
   #and the corresponding threshold 
   
@@ -201,8 +202,8 @@ sample_curve.berlin.manual <- function(tdrn, sample_id, th_list, probes){
   #th_n1 = try(get_probeThreshold(tdrn_long = tdrn, my_probe = "N1"))
   #th_n2 = try(get_probeThreshold(tdrn_long = tdrn, my_probe = "N2"))
   
-  th_1  = th_list[[probes[1]]]
-  th_2  = th_list[[probes[2]]]
+  #th_1  = th_list[[probes[1]]]
+  #th_2  = th_list[[probes[2]]]
   #make plot
   
   p <- 
@@ -215,8 +216,8 @@ sample_curve.berlin.manual <- function(tdrn, sample_id, th_list, probes){
         geom_line() + 
         theme_minimal() +
         scale_color_manual(values = c("red", "blue"))+#, "blue")) + 
-        geom_hline(yintercept = th_1, colour = "red", linetype = 2, alpha = 0.5) +
-        geom_hline(yintercept = th_2, colour = "blue", linetype = 2, alpha = 0.5) +
+        #geom_hline(yintercept = th_1, colour = "red", linetype = 2, alpha = 0.5) +
+        #geom_hline(yintercept = th_2, colour = "blue", linetype = 2, alpha = 0.5) +
         #geom_hline(yintercept = th_n2, colour = "blue", linetype = 2, alpha = 0.5) +
         ggtitle(label = sample_id)
     )

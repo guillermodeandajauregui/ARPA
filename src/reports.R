@@ -50,7 +50,7 @@ make_reports <- function(plot_list,
   pdf_combine(pdfs, output = outpath)
   unlink("temp/", recursive = TRUE)
   }else{
-    my_r <- as.matrix(result_table)[,c("sample_name", "gen_e", "gen_r_nasa_p")]
+    my_r <- as.matrix(result_table)[,c("sample", "gen_e", "gen_r_nasa_p")]
     my_r[grep("Inf", my_r)] <- "45+"
     ntc <- grep(pattern = "NTC", x = names(plot_list))
   ptc <- grep(pattern = "PTC", x = names(plot_list))

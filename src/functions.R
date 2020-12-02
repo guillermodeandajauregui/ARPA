@@ -288,6 +288,142 @@ get_probeThreshold <- function(tdrn_long, my_probe){
 #   }) %>% bind_rows()
 # }
 
+##### plate_qc BERLIN
+plate_qc.berlin <- function(tdrn, all_probes){
+  #takes an tdrn file 
+  #extracts quality control wells
+  #analyzes quality control 
+  #returns a list with qc table and qc results
+  
+  #extracts quality control wells
+  wells.ntc <- grep(pattern = "_NTC", x = colnames(tdrn))
+  wells.ptc <- grep(pattern = "_PTC", x = colnames(tdrn))
+  wells.exc <- grep(pattern = "_CRE", x = colnames(tdrn))
+  print(length(wells.exc))
+  ##and filter the tdrn
+  qc.df <-
+    tdrn %>% 
+    select(c(wells.ntc, wells.ptc, wells.exc), cycles) %>% 
+    pivot_deltaRN %>% 
+    split_longtdrn
+  
+  #get threshold
+  my_threshold <- get_plateThreshold(pivot_deltaRN(tdrn))
+  
+  threshold_list = lapply(X = all_probes, FUN = function(i){
+    get_probeThreshold(tdrn_long = split_longtdrn(pivot_deltaRN(tdrn)), 
+                       my_probe = i)
+  })
+  # 
+  
+  
+  #name for iteration
+  qc.samples <- unique(qc.df$sample.label)
+  names(qc.samples) <- qc.samples
+  
+  #analyze qc
+  qc.results <- 
+    lapply(qc.samples, FUN = function(my_sample){
+      
+      sample_data <-
+        qc.df %>% 
+        filter(sample.label == my_sample) 
+      
+      
+      #we evaluate all probes
+      analyze_sample(tdrn_sample = sample_data, 
+                     probes = all_probes, 
+                     threshold_list = threshold_list)
+      
+    })%>% bind_rows(.id = "sample")  
+  names(qc.results) <- c("sample", "gen_e", "gen_r_nasa_p")
+  
+  
+  #evaluate logic
+  
+  #check that all probes for NTC DO NOT cross threshold
+  
+  ntc.all <-
+    qc.results %>%
+    filter(grepl(pattern = "NTC", x = sample)) %>%
+    #select(!sample) %>%
+    select(-sample) %>%
+    map_dfr(.f = function(i){all(i==99)}) %>% #all probes dont cross threshold
+    unlist %>% all(. == T) #this should be all true
+  
+  
+  #check that all probes for EC DO NOT cross threshold; same as NTC
+  
+  if(length(wells.exc)==0){
+    ec.all <- "not_run"}else{
+      ec.all <-
+        qc.results %>%
+        filter(grepl(pattern = "CRE", x = sample)) %>%
+        #select(!sample) %>%
+        select(-sample) %>%
+        map_dfr(.f = function(i){all(i==99)}) %>% #all probes dont amplify
+        unlist %>% all(. == T) #this should be all true
+    }
+  
+  #check that all probes for PTC DO cross threshold
+  ptc.all <-
+    qc.results %>%
+    filter(grepl(pattern = "PTC", x = sample)) %>%
+    #select(!sample)
+    select(-sample)
+  
+  
+  ptc.all <-
+    list(RP = all(ptc.all[["gen_r_nasa_p"]]==99), #this should be T, do not amplify
+         #list(RP = all(ptc.all[["RP"]]>=35), #this should be T, do not amplify
+         N1 = all(ptc.all[["gen_e"]]<=38) #this should be T, amplify
+    ) %>% 
+    unlist %>% all(. == T) #this should be all true
+  
+  
+  if(length(wells.exc)==0){
+    qc.assess <- ifelse(ntc.all & ptc.all, "PASS", "FAIL")
+  }else{
+    qc.assess <- ifelse(ntc.all & ptc.all & ec.all, "PASS", "FAIL")  
+  }
+  
+  
+  ### add a warnings column to the QC results 
+  
+  
+  qc.results <-
+    qc.results %>% 
+    mutate(warnings = case_when(sample == "PTC" & (gen_r_nasa_p ==Inf | gen_e == Inf )  ~ "under-threshold amplification found. Validate visually",
+                                sample == "EC"  & (gen_r_nasa_p ==Inf | gen_e == Inf)  ~ "under-threshold amplification found. Validate visually",
+                                sample == "NTC" & (gen_r_nasa_p ==Inf | gen_e == Inf)  ~ "under-threshold amplification found. Validate visually",
+                                sample == "PTC" & ((gen_e > 38 & gen_e != 99 ))  ~ "late amplification found. Validate visually",
+                                TRUE ~ "ok")
+    )
+  
+  
+  result_final <- list(qc.values = qc.results,
+                       ntc.pass = ntc.all,
+                       ptc.pass = ptc.all,
+                       ec.pass  = ec.all,
+                       QC = qc.assess)
+  
+  if(!ntc.all){print("NTC failed")}
+  if(!ptc.all){print("PTC failed")}
+  if(is.logical(ec.all) && !ec.all){print("EX failed")}
+  
+  if(any(qc.results$warnings == "under-threshold amplification found. Validate visually")){
+    print("Under-threshold amplification was found in at least one of your QC samples. Validate visually")
+  }
+  
+  if(any(qc.results$warnings == "late amplification found. Validate visually")){
+    print("Late amplification was found in at least one of your QC samples. Validate visually")
+  }
+  
+  return(result_final)
+  
+}
+
+
 ##### plate_qc
 plate_qc <- function(tdrn, all_probes){
   #takes an tdrn file 
@@ -429,7 +565,7 @@ test.plate <- function(tdrn, probes){
   
   wells.ntc <- grep(pattern = "_NTC", x = colnames(tdrn))
   wells.ptc <- grep(pattern = "_PTC", x = colnames(tdrn))
-  wells.exc <- grep(pattern = "_EC", x = colnames(tdrn))
+  wells.exc <- grep(pattern = "_CRE", x = colnames(tdrn))
   
   #extract the samples
   test.df <-

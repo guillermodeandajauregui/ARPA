@@ -15,6 +15,7 @@ library(DT)
 
 source("src/functions.R")
 source("src/funcion_berlin_fromManualResults_IBT.R")
+source("src/funcion_berlin.R")
 
 #input <- c("data/Procolo_COVID-19_Prueba1_4Abr20.eds")
 #output <- c("results/")
@@ -42,11 +43,6 @@ ui <- fluidPage(
     shinyFilesButton('file_eds', 'Archivo EDS', 'Selecciona el archivo EDS a procesar', FALSE),
     hr(),
     
-    ######## h2("Selecciona el archivo a procesar"),
-    #fileInput("rtpcr", "Sube el archivo a procesar"),
-    h5('Selecciona el archivo TXT a procesar'),
-    shinyFilesButton('file_txt', 'Archivo TXT', 'Selecciona el TXT archivo a procesar', FALSE),
-    hr(),
     
     ######## h2("Selecciona el directorio para los resultados"),
     h5('Selecciona el directorio para almacenar los resultados'),
@@ -82,14 +78,6 @@ ui <- fluidPage(
                fluidRow(
                  h4("Archivo EDS seleccionado"),
                  textOutput("input_eds_file")
-               ),
-               hr(),
-               hr(),
-               
-               ###### ARCHIVO A PROCESAR    
-               fluidRow(
-                 h4("Archivo TXT seleccionado"),
-                 textOutput("input_txt_file")
                ),
                hr(),
                hr(),
@@ -160,14 +148,6 @@ server <- function(input, output, session) {
       inFile.path <- as.character(inFile$datapath)
     })
     
-    ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO TXT A PROCESAR
-    shinyFileChoose(input,'file_txt', roots=volumes, session=session)
-    
-    input_txt_file <- reactive({
-      inFile <- parseFilePaths(volumes, input$file_txt)
-      inFile.path <- as.character(inFile$datapath)
-    })
-    
     ###### DESPLIEGUE PARA LA ELECCION DEL DIRECTORIO DE SALIDA
     
     shinyDirChoose(input, 'directory', roots=volumes, session=session)
@@ -185,13 +165,6 @@ server <- function(input, output, session) {
       inFile.path <- as.character(inFile$datapath)
     })
     
-    ###### DESPLIEGUE PARA LA ELECCION DEL ARCHIVO TXT A PROCESAR
-    shinyFileChoose(input,'file_txt', roots=c('wd' = '/home/'), session=session)
-    
-    input_txt_file <- reactive({
-      inFile <- parseFilePaths(c('wd' = '/home/'), input$file_txt)
-      inFile.path <- as.character(inFile$datapath)
-    })
     
     ###### DESPLIEGUE PARA LA ELECCION DEL DIRECTORIO DE SALIDA
     
@@ -208,10 +181,6 @@ server <- function(input, output, session) {
     input_eds_file()
   })
   
-  ####### IMPRIMIR LA RUTA DEL ARCHIVO A PROCESAR
-  output$input_txt_file <- renderText({
-    input_txt_file()
-  })
   
   ####### IMPRIMIR EL DIRECTORIO DE SALIDA
   output$output_dir <- renderText({
@@ -223,7 +192,6 @@ server <- function(input, output, session) {
     
     
     rtpcr <- input_eds_file()
-    txt <- input_txt_file()
     
     if (is.null( rtpcr))
       return("NO EXISTE ARCHIVO DE ENTRADA")
@@ -239,19 +207,12 @@ server <- function(input, output, session) {
     ######## VALIDATE THAT OUTPUT DIRECTORY WAS SELECTED
     ######## OTHERWISE PRINT TEXT DESCRIBIING THE ERROR
     validate(
-      need(txt != "", "NO TXT FILE WAS SELECTED")
-    )
-    
-    ######## VALIDATE THAT OUTPUT DIRECTORY WAS SELECTED
-    ######## OTHERWISE PRINT TEXT DESCRIBIING THE ERROR
-    validate(
       need(output != "", "NO OUTPUT DIRECTORY WAS SELECTED")
     )
     
     withProgress(message = 'corriendo analisis', value = 0.3, {
-      all_results <- funcion_berlin_fromManualResults(
+      all_results <- funcion_berlin(
         input_eds = rtpcr, 
-        input_txt = txt,
         output = paste(output, "/", sep=""))
     })
     
@@ -267,12 +228,12 @@ server <- function(input, output, session) {
     
     if (qc$QC != "PASS"){
       datatable(table_out()$test_results) %>% 
-        formatStyle('N1', 
+        formatStyle('gen_e', 
                     target='row',
                     backgroundColor = "yellow" )
     }else{
       datatable(table_out()$test_results) %>% 
-        formatStyle( 'classification', 
+        formatStyle( 'classification1', 
                      target = 'row',
                      backgroundColor = styleEqual(c("Positivo", "Negativo"),
                                                   c('pink', 'aquamarine')) )
