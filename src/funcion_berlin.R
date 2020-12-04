@@ -1,9 +1,9 @@
 library(tidyverse)
 library(vroom)
 library(janitor)
-source("extract_analysis/functions.R")
-source("extract_analysis/plots.R")
-source("extract_analysis/reports.R")
+source("src/functions.R")
+source("src/plots.R")
+source("src/reports.R")
 
 source("src/functions_adjustment.R")
 source("src/functions_sanitizing.R")
@@ -95,19 +95,19 @@ funcion_berlin <- function(input_eds,
     )
   })
   
-  #make_reports(plot_list = single_plots, 
-  #             result_table = qc_results$qc.values[,1:3], 
-  #             input = input_eds,
-  #             outdir = output, 
-  #             qc_results = qc_results$QC,
-  #             qc = F)
+  make_reports(plot_list = single_plots, 
+              result_table = qc_results$qc.values[,1:3], 
+              input = input_eds,
+              outdir = output, 
+              qc_results = qc_results$QC,
+              qc = F)
   
-  #make_reports(plot_list = single_plots, 
-  #             result_table = qc_results$qc.values[,1:3], 
-  #             input = input_eds,
-  #             outdir = output, 
-  #             qc_results = qc_results$QC,
-  #             qc = T)
+  make_reports(plot_list = single_plots, 
+              result_table = qc_results$qc.values[,1:3], 
+              input = input_eds,
+              outdir = output, 
+              qc_results = qc_results$QC,
+              qc = T)
   
   ################################################################################
   #Create list output
