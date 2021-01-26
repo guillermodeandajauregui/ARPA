@@ -30,7 +30,7 @@ header-includes:
 graphics: true
 width: 1
 logoposition: center
-logo: theme/Inmegenlogosalud.pdf
+logo: theme/logosalud.pdf
 ---
 
 ```{r, echo = FALSE, results='hide',fig.keep = 'all', warning = FALSE, fig.width = 6, fig.height = 6.5, fig.align='center', message = FALSE}
