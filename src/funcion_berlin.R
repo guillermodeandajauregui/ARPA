@@ -76,9 +76,9 @@ funcion_berlin <- function(input_eds,
   
   test.results <- 
     test.samples %>% 
-    mutate(classification = case_when(gen_e <= 38 & gen_r_nasa_p <= 35 ~ "Positivo",
-                                      gen_e > 38 & gen_r_nasa_p <= 35 ~ "Negativo",
-                                      gen_r_nasa_p > 35 ~ "Repetir"
+    mutate(classification = case_when(gen_e <= 40 & gen_r_nasa_p <= 40 ~ "Positivo",
+                                      gen_e > 40 & gen_r_nasa_p <= 40 ~ "Negativo",
+                                      gen_r_nasa_p > 40 ~ "Repetir"
     )) 
 
   #############
@@ -95,19 +95,19 @@ funcion_berlin <- function(input_eds,
     )
   })
   
-  make_reports(plot_list = single_plots, 
-              result_table = qc_results$qc.values[,1:3], 
-              input = input_eds,
-              outdir = output, 
-              qc_results = qc_results$QC,
-              qc = F)
+  #make_reports(plot_list = single_plots, 
+  #            result_table = qc_results$qc.values[,1:3], 
+  #            input = input_eds,
+  #            outdir = output, 
+  #            qc_results = qc_results$QC,
+   #           qc = F)
   
-  make_reports(plot_list = single_plots, 
-              result_table = qc_results$qc.values[,1:3], 
-              input = input_eds,
-              outdir = output, 
-              qc_results = qc_results$QC,
-              qc = T)
+  #make_reports(plot_list = single_plots, 
+  #            result_table = qc_results$qc.values[,1:3], 
+  #            input = input_eds,
+  #            outdir = output, 
+  #            qc_results = qc_results$QC,
+  #            qc = T)
   
   ################################################################################
   #Create list output

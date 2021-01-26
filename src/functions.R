@@ -376,7 +376,7 @@ plate_qc.berlin <- function(tdrn, all_probes){
   ptc.all <-
     list(RP = all(ptc.all[["gen_r_nasa_p"]]==99), #this should be T, do not amplify
          #list(RP = all(ptc.all[["RP"]]>=35), #this should be T, do not amplify
-         N1 = all(ptc.all[["gen_e"]]<=38) #this should be T, amplify
+         N1 = all(ptc.all[["gen_e"]]<=40) #this should be T, amplify
     ) %>% 
     unlist %>% all(. == T) #this should be all true
   
@@ -396,7 +396,7 @@ plate_qc.berlin <- function(tdrn, all_probes){
     mutate(warnings = case_when(sample == "PTC" & (gen_r_nasa_p ==Inf | gen_e == Inf )  ~ "under-threshold amplification found. Validate visually",
                                 sample == "EC"  & (gen_r_nasa_p ==Inf | gen_e == Inf)  ~ "under-threshold amplification found. Validate visually",
                                 sample == "NTC" & (gen_r_nasa_p ==Inf | gen_e == Inf)  ~ "under-threshold amplification found. Validate visually",
-                                sample == "PTC" & ((gen_e > 38 & gen_e != 99 ))  ~ "late amplification found. Validate visually",
+                                sample == "PTC" & ((gen_e > 40 & gen_e != 99 ))  ~ "late amplification found. Validate visually",
                                 TRUE ~ "ok")
     )
   
@@ -510,8 +510,8 @@ plate_qc <- function(tdrn, all_probes){
   ptc.all <-
     list(RP = all(ptc.all[["RP"]]==99), #this should be T, do not amplify
     #list(RP = all(ptc.all[["RP"]]>=35), #this should be T, do not amplify
-         N1 = all(ptc.all[["N1"]]<=38), #this should be T, amplify
-         N2 = all(ptc.all[["N2"]]<=38)  #this should be T, amplify
+         N1 = all(ptc.all[["N1"]]<=40), #this should be T, amplify
+         N2 = all(ptc.all[["N2"]]<=40)  #this should be T, amplify
          ) %>% 
     unlist %>% all(. == T) #this should be all true
   
@@ -530,7 +530,7 @@ plate_qc <- function(tdrn, all_probes){
   mutate(warnings = case_when(sample == "PTC" & (RP ==Inf | N1 == Inf| N2 == Inf)  ~ "under-threshold amplification found. Validate visually",
                               sample == "EC"  & (RP ==Inf | N1 == Inf| N2 == Inf)  ~ "under-threshold amplification found. Validate visually",
                               sample == "PTC" & (RP ==Inf | N1 == Inf| N2 == Inf)  ~ "under-threshold amplification found. Validate visually",
-                              sample == "PTC" & ((N1 > 38 & N1 != 99 ) | (N2 > 38 & N2 != 99))  ~ "late amplification found. Validate visually",
+                              sample == "PTC" & ((N1 > 40 & N1 != 99 ) | (N2 > 40 & N2 != 99))  ~ "late amplification found. Validate visually",
                               TRUE ~ "ok")
   )
   
@@ -615,12 +615,12 @@ cdc_classification <- function(SampleResults){
   #takes results 
   #assigns classification
   SampleResults %>% 
-    mutate(classification = case_when(N1 <= 38  & N2 <= 38 ~ "positive",
+    mutate(classification = case_when(N1 <= 40  & N2 <= 40 ~ "positive",
                                       N1 < 99 & N2 < 99 ~ "edge_positive",
                                       N1  == Inf |  N2 == Inf  ~ "inconclusive_LowAmp",
                                       N1 == 99 & N2 < 99 ~ "inconclusive",
                                       N1 < 99 & N2 == 99 ~ "inconclusive",
-                                      N1 == 99 & N2 == 99 & RP <= 35~ "negative",
+                                      N1 == 99 & N2 == 99 & RP <= 40~ "negative",
                                       N1 == 99 & N2 == 99 & RP < 99  ~ "edge_negative",
                                       N1 == 99 & N2 == 99 & RP >= 99 ~ "invalid"
                                       )

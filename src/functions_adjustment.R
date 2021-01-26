@@ -43,14 +43,19 @@ adjust_sigmoid <- function(curva, resolucion = 0.001){
     
     if(all(df.check$increasing[-1] == T)){ #first one has no lag
       #return high res data frame 
-      return(df)} #this is the best case scenario! 
+      if(100*first(df$value) > last(df$value)){
+        return("not_adjusted")
+      }else{
+          return(df)
+      }
+    } #this is the best case scenario! 
       
     else{
       #fail with not_adjusted
       message("decreasing logistic")
       return("not_adjusted")
       }
-          
+        
   }else{
     
     #if fit_try failed
@@ -103,8 +108,12 @@ adjust_sigmoid <- function(curva, resolucion = 0.001){
         
       if(all(df.check$increasing[-1] == T)){ #first one has no lag
         #return high res data frame 
-        return(df)#this is the second best escenario 
-        } 
+        if(100*first(df$value) > last(df$value)){
+          return("not_adjusted")
+        }else{
+          return(df) #this is the second best escenario 
+        }
+      } 
       
       else{
         #fail with not_adjusted
