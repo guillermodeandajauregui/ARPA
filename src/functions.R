@@ -339,44 +339,84 @@ plate_qc.berlin <- function(tdrn, all_probes){
   names(qc.results) <- c("sample", "gen_e", "gen_r_nasa_p")
   
   
+  ########################## LOGIC GIVEN BY JOAQUIN
+  ########################## 
+  ########################## 
   #evaluate logic
   
   #check that all probes for NTC DO NOT cross threshold
   
-  ntc.all <-
-    qc.results %>%
-    filter(grepl(pattern = "NTC", x = sample)) %>%
-    #select(!sample) %>%
-    select(-sample) %>%
-    map_dfr(.f = function(i){all(i==99)}) %>% #all probes dont cross threshold
-    unlist %>% all(. == T) #this should be all true
+  #ntc.all <-
+  #  qc.results %>%
+  #  filter(grepl(pattern = "NTC", x = sample)) %>%
+  #  select(-sample) %>%
+  #  map_dfr(.f = function(i){all(i==99)}) %>% #all probes dont cross threshold
+  #  unlist %>% all(. == T) #this should be all true
   
   
   #check that all probes for EC DO NOT cross threshold; same as NTC
   
-  if(length(wells.exc)==0){
-    ec.all <- "not_run"}else{
-      ec.all <-
-        qc.results %>%
-        filter(grepl(pattern = "CRE", x = sample)) %>%
-        #select(!sample) %>%
-        select(-sample) %>%
-        map_dfr(.f = function(i){all(i==99)}) %>% #all probes dont amplify
-        unlist %>% all(. == T) #this should be all true
-    }
+  #if(length(wells.exc)==0){
+  #  ec.all <- "not_run"}else{
+  #    ec.all <-
+  #      qc.results %>%
+  #      filter(grepl(pattern = "CRE", x = sample)) %>%
+  #      select(-sample) %>%
+  #      map_dfr(.f = function(i){all(i==99)}) %>% #all probes dont amplify
+  #      unlist %>% all(. == T) #this should be all true
+  #  }
   
   #check that all probes for PTC DO cross threshold
+  #ptc.all <-
+  #  qc.results %>%
+  #  filter(grepl(pattern = "PTC", x = sample)) %>%
+  #  select(-sample)
+  
+  
+  #ptc.all <-
+  #  list(RP = all(ptc.all[["gen_r_nasa_p"]]==99), #this should be T, do not amplify
+  #       N1 = all(ptc.all[["gen_e"]]<=40) #this should be T, amplify
+  #  ) %>% 
+  #  unlist %>% all(. == T) #this should be all true
+  
+  
+  ########################## CDC LOGIC
+  ########################## 
+  ########################## 
+  
+  #evaluate logic
   ptc.all <-
     qc.results %>%
     filter(grepl(pattern = "PTC", x = sample)) %>%
-    #select(!sample)
     select(-sample)
   
-  
   ptc.all <-
-    list(RP = all(ptc.all[["gen_r_nasa_p"]]==99), #this should be T, do not amplify
-         #list(RP = all(ptc.all[["RP"]]>=35), #this should be T, do not amplify
+    list(RP = all(ptc.all[["gen_r_nasa_p"]]<=40), #this should be T, amplify
          N1 = all(ptc.all[["gen_e"]]<=40) #this should be T, amplify
+    ) %>% 
+    unlist %>% all(. == T) #this should be all true
+  
+  ntc.all <-
+    qc.results %>%
+    filter(grepl(pattern = "NTC", x = sample)) %>%
+    select(-sample) 
+    
+  ntc.all <-
+    list(RP = all(ntc.all[["gen_r_nasa_p"]]==99), #this should be T, do not amplify
+         N1 = all(ntc.all[["gen_e"]]==99) #this should be T, do not amplify
+    ) %>% 
+    unlist %>% all(. == T) #this should be all true
+  
+  
+  ec.all <-
+    qc.results %>%
+    filter(grepl(pattern = "CRE", x = sample)) %>%
+    select(-sample)
+    
+    
+  ec.all <-
+    list(RP = all(ec.all[["gen_r_nasa_p"]]<=40), #this should be T, amplify
+         N1 = all(ec.all[["gen_e"]]==99) #this should be T, do not amplify
     ) %>% 
     unlist %>% all(. == T) #this should be all true
   
@@ -388,7 +428,7 @@ plate_qc.berlin <- function(tdrn, all_probes){
   }
   
   
-  ### add a warnings column to the QC results 
+    ### add a warnings column to the QC results 
   
   
   qc.results <-
