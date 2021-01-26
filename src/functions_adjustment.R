@@ -93,7 +93,7 @@ adjust_sigmoid <- function(curva, resolucion = 0.001){
         
         if(100*first(df$value) < last(df$value)){
           
-          message("last is at least 100 times greater than first")
+          message("last is at least 10 times greater than first")
           return(df)
           
         }else{
