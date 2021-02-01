@@ -27,8 +27,8 @@ ui <- fluidPage(
   #                column(width = 6, h2("Aplicaci??n para an??lisis de RT-PCR")), 
   #            windowTitle="MyPage"),
   
-  titlePanel( div(column(width = 6, h1("ARPA - Generador de reportes")), 
-                  column(width = 4, tags$img(src = "images/inmegen.jpg"))),
+  titlePanel( div(column(width = 6, h1("ARPA - Análisis automático de resultados de RT-PCR")), 
+                  column(width = 4, tags$img(src = "images/conjunta.jpeg"))),
               windowTitle="rt-PCR-analysis"),
   
   hr(),
@@ -89,29 +89,49 @@ ui <- fluidPage(
                ),
                hr(),
                hr(),
+               hr(),
+               hr(),
                
                ###### TABLA DE RESULTADOS
                fluidRow( 
-                 h4("Tabla de resultados"),
+                 h3("Tabla de resultados"),
                  #textOutput("run_ready")
                  dataTableOutput(outputId = 'run_ready')
                )
       ),
       tabPanel(title = "Curvas QC",
                value = "curves", 
-               h3(textOutput("caption1")),
-               plotOutput("plot1"),
-               br(),
-               br(),
-               br(),
-               h2(textOutput("caption2")),
-               plotOutput("plot2"),
-               br(),
-               br(),
-               br(),
-               h2(textOutput("caption3")),
-               plotOutput("plot3")
-               #dataTableOutput(outputId = 'summary_table_gene')
+               ###### TABLA DE RESULTADOS
+               fluidRow( 
+                 h3("Tabla de resultados"),
+                 #textOutput("run_ready")
+                 dataTableOutput(outputId = 'qc_ready')
+               ), 
+               hr(),
+               hr(),
+               
+               fluidRow( 
+                 h3("Resultado QC"),
+                 #textOutput("run_ready")
+                 textOutput("qc_label")
+               ), 
+               hr(),
+               hr(),
+               
+               fluidRow(
+                 h3(textOutput("caption1")),
+                 plotOutput("plot1"),
+                 br(),
+                 br(),
+                 br(),
+                 h2(textOutput("caption2")),
+                 plotOutput("plot2"),
+                 br(),
+                 br(),
+                 br(),
+                 h2(textOutput("caption3")),
+                 plotOutput("plot3")
+               )
       ), 
       tabPanel(title = "Curvas muestra",
                value = "samples", 
@@ -225,18 +245,24 @@ server <- function(input, output, session) {
     
     qc <- table_out()$qc_results
     
-    if (qc$QC != "PASS"){
-      datatable(table_out()$test_results) %>% 
-        formatStyle('gen_e', 
-                    target='row',
-                    backgroundColor = "yellow" )
-    }else{
-      datatable(table_out()$test_results) %>% 
-        formatStyle( 'classification', 
-                     target = 'row',
-                     backgroundColor = styleEqual(c("Positivo", "Negativo"),
-                                                  c('pink', 'aquamarine')) )
-    }
+    datatable(table_out()$test_results) %>% 
+      formatStyle( 'classification', 
+                   target = 'row',
+                   backgroundColor = styleEqual(c("Positivo", "Negativo"),
+                                                c('pink', 'aquamarine')) )
+    
+    #if (qc$QC != "PASS"){
+    #  datatable(table_out()$test_results) %>% 
+    #    formatStyle('gen_e', 
+    #                target='row',
+    #                backgroundColor = "yellow" )
+    #}else{
+    #  datatable(table_out()$test_results) %>% 
+    #    formatStyle( 'classification', 
+    #                 target = 'row',
+    #                 backgroundColor = styleEqual(c("Positivo", "Negativo"),
+    #                                              c('pink', 'aquamarine')) )
+    #}
   })
   
   
@@ -244,6 +270,24 @@ server <- function(input, output, session) {
   # IMPRIMIR CURVAS DE QC 
   ################################################################################
   
+  ####### DESPLEGAR TABLA DE QC
+  output$qc_ready <- renderDataTable({
+    table_out()
+    qc <- table_out()$qc_results
+    
+    qc_table <- qc$qc.values
+    datatable(qc_table) 
+  })
+  
+  ####### DESPLEGAR CLASIFICACION FINAL DE QC
+  output$qc_label <- renderText({
+    table_out()
+    qc <- table_out()$qc_results
+    qc_final <- qc$QC
+    qc_final 
+  })
+  
+  ####### PLOTS
   output$caption1 <- renderText({
     "NTC"
   })
