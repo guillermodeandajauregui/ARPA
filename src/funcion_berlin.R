@@ -53,7 +53,10 @@ funcion_berlin <- function(input_eds,
   
   qc_names = c("NTC", "PTC", "CRE")
   
-  
+  has_all_qc <- CheckControlsEDS(eds = input_eds, controls = qc_names)
+  if(has_all_qc==FALSE){
+    warning("do not have exactly 3 controls")
+  }
   #read eds 
   
   my_deltaRN <- tidy_deltaRN(input_eds) #read deltaRN from EDS file 
