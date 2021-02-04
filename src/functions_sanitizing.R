@@ -103,3 +103,74 @@ CheckProbesEDS <- function(eds, my_probes){
   
 }
 
+### Check correct controls and number of controls
+
+CheckControlsEDS <- function(eds, controls = c("NTC", "PTC", "CRE")){
+  
+  
+  eds.file <- unz(description = eds, filename = "apldbio/sds/analysis_result.txt")
+  analysis_text <- read_lines(eds.file)
+  #find the lines with the Delta Rn
+  delta_rn.id <- which(str_detect(string = analysis_text, pattern = "Delta Rn"))
+  
+  #extract those, put them as a vector  
+  ### splits them in a list
+  list_deltaRN <- analysis_text[delta_rn.id] %>% 
+    str_replace(pattern = "Delta Rn values\t", replacement = "") %>% 
+    sapply(FUN = function(i){
+      str_split(string = i, pattern = "\t") 
+    }) 
+  
+  ### makes them numeric
+  list_deltaRN <- 
+    lapply(list_deltaRN, FUN = function(i){
+      i <- as.numeric(i)
+      names(i) <- 1:length(i)
+      return(i)
+    })
+  
+  ### name them with the info that is two rows before
+  
+  nomen <- 
+    analysis_text[delta_rn.id - 2] %>% 
+    sapply(FUN = function(i){
+      intermedio <- str_split(string = i, pattern = "\t")
+      intermedio <- unlist(intermedio, recursive = F)
+      paste(intermedio[1], intermedio[2], intermedio[3], sep = "_")
+    })
+  
+  names(list_deltaRN) <- nomen
+  
+  ### make a data frame 
+  df_deltaRN <- 
+    list_deltaRN %>% 
+    as_tibble()
+  
+  ### add the cycles
+  
+  df_deltaRN <-
+    df_deltaRN %>% 
+    mutate(cycles = 1:nrow(df_deltaRN))
+  
+  tdrn <- 
+  df_deltaRN %>% 
+    pivot_longer(cols = -cycles,
+                 names_to = "sample.id",
+                 values_to = "value") %>%
+    separate(col = sample.id, sep = "_", into = c("well", 
+                                                  "sample.label", 
+                                                  "probe"),
+             remove = F)
+  
+  ### check that there is the correct number of controls 
+  check_control_labels <- 
+  tdrn %>% 
+    group_by(sample.label) %>% 
+    tally() %>% 
+    filter(sample.label%in%controls) %>% 
+    pull(n)
+  
+  return(check_control_labels==c(1,1,1))
+  
+  
+}
