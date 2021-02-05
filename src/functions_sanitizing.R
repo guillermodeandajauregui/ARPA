@@ -167,10 +167,22 @@ CheckControlsEDS <- function(eds, controls = c("NTC", "PTC", "CRE")){
   tdrn %>% 
     group_by(sample.label) %>% 
     tally() %>% 
-    filter(sample.label%in%controls) %>% 
-    pull(n)
+    filter(sample.label%in%controls)
   
-  return(check_control_labels==c(1,1,1))
+  ### SAME NAMES AS EXPECTED
+  if (nrow(check_control_labels) != length(controls)){
+    return("SOME QC CONTROLS ARE MISSING; OR THE NAME OF THE CONTROLS DO NOT CORRESPOND")
+  }
   
+  ### IF SOME CONTROL IS IN MORE THA ONE WELL
+  cycles_per_control <- check_control_labels %>% 
+    select(n) %>%  
+    unique()
   
+  if (nrow(cycles_per_control) != 1){
+    return("SOME QC CONTROLS DON'T HAVE THE SAME NUMBER OF CYCLES OR WELLS")
+  }
+  
+  return("PASS")
+
 }

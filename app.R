@@ -15,6 +15,8 @@ library(DT)
 
 source("src/functions.R")
 source("src/funcion_berlin.R")
+source("src/function_sanity_check.R")
+source("src/function_reports.R")
 
 #input <- c("data/Procolo_COVID-19_Prueba1_4Abr20.eds")
 #output <- c("results/")
@@ -23,9 +25,15 @@ source("src/funcion_berlin.R")
 ui <- fluidPage(
   theme = shinytheme("spacelab"),
   
-  #titlePanel( div(column(width = 6, tags$img(src = "images/inmegen.jpg"))),
-  #                column(width = 6, h2("Aplicaci??n para an??lisis de RT-PCR")), 
-  #            windowTitle="MyPage"),
+  ###### VALIDATION FONT
+  tags$head(
+    tags$style(HTML("
+                    .shiny-output-error-validation {
+                    color: #ff0000;
+                    font-weight: bold;
+                    }
+                    "))
+  ),
   
   titlePanel( div(column(width = 6, h1("ARPA - Análisis automático de resultados de RT-PCR")), 
                   column(width = 4, tags$img(src = "images/conjunta.jpeg"))),
@@ -53,6 +61,11 @@ ui <- fluidPage(
     ######## BUTTON TO GENERATE SUMMARY TABLE
     h5('Presiona para analizar los datos de la corrida'),
     actionButton("analizar", "Analizar corrida"),
+    hr(),
+    
+    ######## BUTTON TO GENERATE REPORTS
+    h5('Presiona para generar reportes HTML'),
+    actionButton("reportes", "Generar reportes"),
     hr()
 
   ),
@@ -97,7 +110,18 @@ ui <- fluidPage(
                  h3("Tabla de resultados"),
                  #textOutput("run_ready")
                  dataTableOutput(outputId = 'run_ready')
+               ),
+               
+               hr(),
+               hr(),
+              
+               ###### DIRECTORIO DE RESULTADOS
+               fluidRow(
+                 h3("Generación de reportes"),
+                 textOutput("text_reports2"),
+                 textOutput("text_reports")
                )
+               
       ),
       tabPanel(title = "Curvas QC",
                value = "curves", 
@@ -212,9 +236,6 @@ server <- function(input, output, session) {
     
     rtpcr <- input_eds_file()
     
-    if (is.null( rtpcr))
-      return("NO EXISTE ARCHIVO DE ENTRADA")
-    
     output <- output_dir()
     
     ######## VALIDATE THAT  INPUT EDS FILE WAS SELECTED
@@ -229,6 +250,13 @@ server <- function(input, output, session) {
       need(output != "", "NO OUTPUT DIRECTORY WAS SELECTED")
     )
     
+    
+    ####### VALIDACIONES DE ENTRADA: HAS RESULTS, PROBE NAMES, QC NAMES
+    sanity_result <- funcion_sanity_checks(input_eds = rtpcr)
+    validate(
+      need(sanity_result == "PASS", sanity_result)
+    )
+    
     withProgress(message = 'corriendo analisis', value = 0.3, {
       all_results <- funcion_berlin(
         input_eds = rtpcr, 
@@ -238,6 +266,7 @@ server <- function(input, output, session) {
     return(all_results)
     
   })
+  
   
   ####### DESPLEGAR TABLA DE RESULTADOS
   output$run_ready <- renderDataTable({
@@ -340,6 +369,37 @@ server <- function(input, output, session) {
     (plot)
   })
 
+  
+  ####### CORRER EL PROCESO DE GENERACION DE REPORTES AL DARLE CLICK AL BOTON REPORTES
+  
+  text_reports_status <- eventReactive(input$reportes, {
+    
+    if ( is.null(table_out()))
+      return("LAS MUESTRAS DEBEN SER ANALIZADAS PRIMERO")
+    
+    rtpcr <- input_eds_file()
+    output <- output_dir()
+
+    withProgress(message = 'generando reportes', value = 0.3, {
+      function_reports(
+        results_list = table_out(), 
+        input_eds = rtpcr, 
+        output = paste(output, "/", sep=""))
+    })
+    
+  })
+  
+  ####### IMPRIMIR EL DIRECTORIO DE SALIDA
+  output$text_reports <- renderText({
+    text_reports_status()
+  })
+  
+  ####### IMPRIMIR EL DIRECTORIO DE SALIDA
+  output$text_reports2 <- renderText({
+    "Recuerda que las muestras deben ser analizadas primero"
+  })
+  
+  
 }
 
 # Run the application 

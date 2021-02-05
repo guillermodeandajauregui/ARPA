@@ -3,33 +3,13 @@ library(vroom)
 library(janitor)
 source("src/functions.R")
 source("src/plots.R")
-source("src/reports.R")
 
 source("src/functions_adjustment.R")
-source("src/functions_sanitizing.R")
 source("src/getVolumes.R")
 
 funcion_berlin <- function(input_eds, 
           output){
   
-  
-  #####################
-  #Sanity checks 
-  #####################
-  
-  ### check eds has results
-  
-  has_results <- try(CheckResultsEDS(eds = input_eds))
-  if(has_results == FALSE){
-    return("no_results")
-  }
-  
-  ### check sample names in eds have no special characters (only AZaz09 and -)
-  
-  #has_CleanNames <- CheckNamesEDS(eds = input)
-  #if(has_CleanNames == FALSE){
-  #  return("special_characters_in_names")
-  #}
   
   ########
   #define probes
@@ -38,13 +18,7 @@ funcion_berlin <- function(input_eds,
   berlin_probes <- try(c("Gen E", "Gen RNasaP"))
   names(berlin_probes) <- try(berlin_probes)
   
-  ### check that all samples have all probes
-  
-  has_allProbes <- try(CheckProbesEDS(eds = input_eds, my_probes = berlin_probes))
-  if(has_allProbes == FALSE){
-    warning("some_samples_are_missing_probes")
-  }
-  
+   
   ##############################################################################
   #define QC names 
   #this is hard code for now, until we get feedback on actual names and roles
@@ -53,11 +27,6 @@ funcion_berlin <- function(input_eds,
   
   qc_names = c("NTC", "PTC", "CRE")
   
-  has_all_qc <- try(CheckControlsEDS(eds = input_eds, controls = qc_names))
-  if(has_all_qc==FALSE){
-    warning("do not have exactly 3 controls")
-  }
-  #read eds 
   
   my_deltaRN <- try(tidy_deltaRN(input_eds)) #read deltaRN from EDS file 
   
@@ -108,21 +77,6 @@ funcion_berlin <- function(input_eds,
              error = function(e){return(as.character(e))}
              )
     
-    
-  
-  try(make_reports(plot_list = single_plots, 
-              result_table = qc_results$qc.values[,1:3], 
-              input = input_eds,
-              outdir = output, 
-              qc_results = qc_results$QC,
-             qc = F))
-  
-  try(make_reports(plot_list = single_plots, 
-              result_table = qc_results$qc.values[,1:3], 
-              input = input_eds,
-              outdir = output, 
-              qc_results = qc_results$QC,
-              qc = T))
   
   ################################################################################
   #Create list output
