@@ -375,7 +375,7 @@ server <- function(input, output, session) {
   text_reports_status <- eventReactive(input$reportes, {
     
     if ( is.null(table_out()))
-      return("LAS MUESTRAS DEBEN SER ANALIZADAS PRIMERO")
+      return("Recuerda que las muestras deben ser analizadas primero")
     
     rtpcr <- input_eds_file()
     output <- output_dir()
