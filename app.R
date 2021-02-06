@@ -272,7 +272,7 @@ server <- function(input, output, session) {
         input_eds = rtpcr, 
         output = paste(output, "/", sep=""))
       
-      all_results$qc_results <- "ERROR"
+      #all_results$qc_results <- "ERROR"
       #all_results$test_results <- "ERROR-TABLE"
       #all_results$single_plots <- "ERROR-PLOTS"
       
