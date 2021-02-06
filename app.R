@@ -109,6 +109,7 @@ ui <- fluidPage(
                fluidRow( 
                  h3("Tabla de resultados"),
                  #textOutput("run_ready")
+                 span(textOutput(outputId = 'test_table_text'), style="color:red"), 
                  dataTableOutput(outputId = 'run_ready')
                ),
                
@@ -119,7 +120,8 @@ ui <- fluidPage(
                fluidRow(
                  h3("Generación de reportes"),
                  textOutput("text_reports2"),
-                 textOutput("text_reports")
+                 textOutput("text_reports"),
+                 span(textOutput("test_reports"), style="color:red") 
                )
                
       ),
@@ -128,6 +130,7 @@ ui <- fluidPage(
                ###### TABLA DE RESULTADOS
                fluidRow( 
                  h3("Tabla de resultados"),
+                 span(textOutput(outputId = 'test_qc'), style="color:red"),
                  #textOutput("run_ready")
                  dataTableOutput(outputId = 'qc_ready')
                ), 
@@ -136,6 +139,7 @@ ui <- fluidPage(
                
                fluidRow( 
                  h3("Resultado QC"),
+                 span(textOutput(outputId = 'test_qc2'), style="color:red"),
                  #textOutput("run_ready")
                  textOutput("qc_label")
                ), 
@@ -144,16 +148,19 @@ ui <- fluidPage(
                
                fluidRow(
                  h3(textOutput("caption1")),
+                 span(textOutput(outputId = 'test_plot1'), style="color:red"), 
                  plotOutput("plot1"),
                  br(),
                  br(),
                  br(),
                  h2(textOutput("caption2")),
+                 span(textOutput(outputId = 'test_plot2'), style="color:red"), 
                  plotOutput("plot2"),
                  br(),
                  br(),
                  br(),
                  h2(textOutput("caption3")),
+                 span(textOutput(outputId = 'test_plot3'), style="color:red"), 
                  plotOutput("plot3")
                )
       ), 
@@ -161,6 +168,9 @@ ui <- fluidPage(
                value = "samples", 
                
                h3("Selecciona una muestra para visualizar sus curvas de amplificacion"),
+               br(),
+               span(textOutput(outputId = 'test_table_text2'), style="color:red"), 
+               br(),
                selectInput(inputId = "sample", label = "", choices = NULL),
                br(),
                br(),
@@ -261,24 +271,42 @@ server <- function(input, output, session) {
       all_results <- funcion_berlin(
         input_eds = rtpcr, 
         output = paste(output, "/", sep=""))
+      
+      all_results$qc_results <- "ERROR"
+      #all_results$test_results <- "ERROR-TABLE"
+      #all_results$single_plots <- "ERROR-PLOTS"
+      
+      #all_results <- list(
+      #  test_results = "EROR",
+      #  qc_results = "qc_results", 
+      #  single_plots = "single_plots"
+      #)
     })
     
     return(all_results)
     
   })
   
+  ####### IF THE COMPUTATION OF TEST_RESULTS GENERATED AN ERROR, PRINT THE ERROR
+  output$test_table_text <- renderText({
+    if (is.character(table_out()$test_results)){
+      table_out()$test_results
+    }
+  })
   
   ####### DESPLEGAR TABLA DE RESULTADOS
   output$run_ready <- renderDataTable({
     table_out()
     
-    qc <- table_out()$qc_results
+    if (is.data.frame(table_out()$test_results)){
+      datatable(table_out()$test_results) %>% 
+        formatStyle( 'classification', 
+                     target = 'row',
+                     backgroundColor = styleEqual(c("Positivo", "Negativo"),
+                                                  c('pink', 'aquamarine')) )
+    }
     
-    datatable(table_out()$test_results) %>% 
-      formatStyle( 'classification', 
-                   target = 'row',
-                   backgroundColor = styleEqual(c("Positivo", "Negativo"),
-                                                c('pink', 'aquamarine')) )
+    #qc <- table_out()$qc_results
     
     #if (qc$QC != "PASS"){
     #  datatable(table_out()$test_results) %>% 
@@ -298,61 +326,115 @@ server <- function(input, output, session) {
   ################################################################################
   # IMPRIMIR CURVAS DE QC 
   ################################################################################
+  ####### IF THE COMPUTATION OF TEST_RESULTS GENERATED AN ERROR, PRINT THE ERROR
+  output$test_qc <- renderText({
+    if (is.character(table_out()$qc_results)){
+      table_out()$qc_results
+    }
+  })
   
   ####### DESPLEGAR TABLA DE QC
   output$qc_ready <- renderDataTable({
     table_out()
     qc <- table_out()$qc_results
+    if (is.list(qc)){
+      qc_table <- qc$qc.values
+      datatable(qc_table) 
+    }
     
-    qc_table <- qc$qc.values
-    datatable(qc_table) 
   })
   
   ####### DESPLEGAR CLASIFICACION FINAL DE QC
+  
+  output$test_qc2 <- renderText({
+    if (is.character(table_out()$qc_results)){
+      table_out()$qc_results
+    }
+  })
+  
   output$qc_label <- renderText({
     table_out()
     qc <- table_out()$qc_results
-    qc_final <- qc$QC
-    qc_final 
+    if (is.list(qc)){
+      qc_final <- qc$QC
+      qc_final
+    }
   })
   
-  ####### PLOTS
+  ####### PLOTS NTC
   output$caption1 <- renderText({
     "NTC"
+  })
+  
+  output$test_plot1 <- renderText({
+    if (is.character(table_out()$single_plots)){
+      table_out()$single_plots
+    }
   })
   
   output$plot1 <- renderPlot({
     table_out()
     plots <- table_out()$single_plots
-    (plots[['NTC']] + ggtitle("NTC"))
+    if (is.list(plots)){
+      (plots[['NTC']] + ggtitle("NTC"))
+    }
   })
+  
+  ####### PLOTS PTC
   
   output$caption2 <- renderText({
     "PTC"
   })
   
+  output$test_plot2 <- renderText({
+    if (is.character(table_out()$single_plots)){
+      table_out()$single_plots
+    }
+  })
+  
   output$plot2 <- renderPlot({
     table_out()
     plots <- table_out()$single_plots
-    (plots[['PTC']] + ggtitle('PTC'))
+    if (is.list(plots)){
+      (plots[['PTC']] + ggtitle('PTC'))
+    }
   })
+
+  ####### PLOTS CRE
   
   output$caption3 <- renderText({
     'CRE'
   })
   
+  output$test_plot3 <- renderText({
+    if (is.character(table_out()$single_plots)){
+      table_out()$single_plots
+    }
+  })
+  
   output$plot3 <- renderPlot({
     table_out()
     plots <- table_out()$single_plots
-    (plots[['CRE']] + ggtitle('CRE'))
+    if (is.list(plots)){
+       (plots[['CRE']] + ggtitle('CRE'))
+    }
   })
   
   ################################################################################
   #Get sample names for drop-down menu
   ################################################################################
   
+  ####### IF THE COMPUTATION OF TEST_RESULTS GENERATED AN ERROR, PRINT THE ERROR
+  output$test_table_text2 <- renderText({
+    if (is.character(table_out()$test_results)){
+      table_out()$test_results
+    }
+  })
+  
   observe({
-    updateSelectInput(session = session, inputId = "sample", choices = table_out()[['test_results']]$sample_name)
+    if (is.data.frame(table_out()$test_results)){
+      updateSelectInput(session = session, inputId = "sample", choices = table_out()[['test_results']]$sample_name)
+    }
   })
   
   output$caption_sample <- renderText({
@@ -365,8 +447,10 @@ server <- function(input, output, session) {
     table_out()
     sample <- input$sample
     plots <- table_out()$single_plots
-    plot <- plots[[sample]]
-    (plot)
+    if (is.list(plots)){
+      plot <- plots[[sample]]
+      (plot)
+    }
   })
 
   
@@ -374,19 +458,19 @@ server <- function(input, output, session) {
   
   text_reports_status <- eventReactive(input$reportes, {
     
-    if ( is.null(table_out()))
-      return("Recuerda que las muestras deben ser analizadas primero")
-    
     rtpcr <- input_eds_file()
     output <- output_dir()
-
-    withProgress(message = 'generando reportes', value = 0.3, {
-      function_reports(
-        results_list = table_out(), 
-        input_eds = rtpcr, 
-        output = paste(output, "/", sep=""))
-    })
     
+    all_results <- table_out()
+
+    if (!is.character(all_results$single_plots) & !is.character(all_results$test_results) & !is.character(all_results$qc_results)){
+      withProgress(message = 'generando reportes', value = 0.3, {
+        function_reports(
+          results_list = table_out(), 
+          input_eds = rtpcr, 
+          output = paste(output, "/", sep=""))
+      })
+    }
   })
   
   ####### IMPRIMIR EL DIRECTORIO DE SALIDA
@@ -397,8 +481,14 @@ server <- function(input, output, session) {
   ####### IMPRIMIR EL DIRECTORIO DE SALIDA
   output$text_reports2 <- renderText({
     "Recuerda que las muestras deben ser analizadas primero"
-  })
+})
   
+  output$test_reports <- renderText({
+    all_results <- table_out()
+    if (is.character(all_results$single_plots) | is.character(all_results$test_results) | is.character(all_results$qc_results)){
+      "Hubo un error durante el análisis, el reporte no se generará"
+    }
+  })
   
 }
 
