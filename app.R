@@ -35,7 +35,7 @@ ui <- fluidPage(
                     "))
   ),
   
-  titlePanel( div(column(width = 6, h1("ARPA - Análisis automático de resultados de RT-PCR")), 
+  titlePanel( div(column(width = 6, h1("ARPA - Automatic analysis of RT-PCR results")), 
                   column(width = 4, tags$img(src = "images/conjunta.jpeg"))),
               windowTitle="rt-PCR-analysis"),
   
@@ -46,26 +46,26 @@ ui <- fluidPage(
     
     ######## h2("Selecciona el archivo a procesar"),
     #fileInput("rtpcr", "Sube el archivo a procesar"),
-    h5('Selecciona el archivo EDS a procesar'),
-    shinyFilesButton('file_eds', 'Archivo EDS', 'Selecciona el archivo EDS a procesar', FALSE),
+    h5('Select the EDS file'),
+    shinyFilesButton('file_eds', 'EDS File', 'Select the EDS file', FALSE),
     hr(),
     
     
     ######## h2("Selecciona el directorio para los resultados"),
-    h5('Selecciona el directorio para almacenar los resultados'),
-    shinyDirButton('directory', 'Directorio de resultados', 'Selecciona el directorio para almacenar los resultados'),
+    h5('Select the directory to store the reports'),
+    shinyDirButton('directory', 'Results directory', 'Select the directory to store the reports'),
     #shinyDirChoose(input, 'out_dir', roots = c(home = '~')),
     #fileInput("dir_out", "Selecciona el directorio para almacenar los resultados"),
     hr(),
     
     ######## BUTTON TO GENERATE SUMMARY TABLE
-    h5('Presiona para analizar los datos de la corrida'),
-    actionButton("analizar", "Analizar corrida"),
+    h5('Press to start analysis'),
+    actionButton("analizar", "Start analysis"),
     hr(),
     
     ######## BUTTON TO GENERATE REPORTS
-    h5('Presiona para generar reportes HTML'),
-    actionButton("reportes", "Generar reportes"),
+    h5('Press to generate HTML reports'),
+    actionButton("reportes", "Generate reports"),
     hr()
 
   ),
@@ -75,20 +75,13 @@ ui <- fluidPage(
     
     tabsetPanel(
       id = "navbar",
-      tabPanel(title = "Tabla Resumen",
+      tabPanel(title = "Summary table",
                value = "table",
                
-               ###### PROTOCOLO
-               fluidRow(
-                 h4("Protocolo seleccionado"),
-                 textOutput("protocolo")
-               ),
-               hr(),
-               hr(),
                
                ###### ARCHIVO A PROCESAR    
                fluidRow(
-                 h4("Archivo EDS seleccionado"),
+                 h4("EDS file"),
                  textOutput("input_eds_file")
                ),
                hr(),
@@ -97,7 +90,7 @@ ui <- fluidPage(
                
                ###### DIRECTORIO DE RESULTADOS
                fluidRow(
-                 h4("Directorio de resultados seleccionado"),
+                 h4("Output directory"),
                  textOutput("output_dir")
                ),
                hr(),
@@ -107,7 +100,7 @@ ui <- fluidPage(
                
                ###### TABLA DE RESULTADOS
                fluidRow( 
-                 h3("Tabla de resultados"),
+                 h3("Summary Table"),
                  #textOutput("run_ready")
                  span(textOutput(outputId = 'test_table_text'), style="color:red"), 
                  dataTableOutput(outputId = 'run_ready')
@@ -118,18 +111,18 @@ ui <- fluidPage(
               
                ###### DIRECTORIO DE RESULTADOS
                fluidRow(
-                 h3("Generación de reportes"),
+                 h3("Report generation"),
                  textOutput("text_reports2"),
                  textOutput("text_reports"),
                  span(textOutput("test_reports"), style="color:red") 
                )
                
       ),
-      tabPanel(title = "Curvas QC",
+      tabPanel(title = "QC Analysis",
                value = "curves", 
                ###### TABLA DE RESULTADOS
                fluidRow( 
-                 h3("Tabla de resultados"),
+                 h3("QC Table"),
                  span(textOutput(outputId = 'test_qc'), style="color:red"),
                  #textOutput("run_ready")
                  dataTableOutput(outputId = 'qc_ready')
@@ -138,7 +131,7 @@ ui <- fluidPage(
                hr(),
                
                fluidRow( 
-                 h3("Resultado QC"),
+                 h3("QC results"),
                  span(textOutput(outputId = 'test_qc2'), style="color:red"),
                  #textOutput("run_ready")
                  textOutput("qc_label")
@@ -164,10 +157,10 @@ ui <- fluidPage(
                  plotOutput("plot3")
                )
       ), 
-      tabPanel(title = "Curvas muestra",
+      tabPanel(title = "Curves per sample",
                value = "samples", 
                
-               h3("Selecciona una muestra para visualizar sus curvas de amplificacion"),
+               h3("Select one sample to visualize its amplification curves"),
                br(),
                span(textOutput(outputId = 'test_table_text2'), style="color:red"), 
                br(),
@@ -267,7 +260,7 @@ server <- function(input, output, session) {
       need(sanity_result == "PASS", sanity_result)
     )
     
-    withProgress(message = 'corriendo analisis', value = 0.3, {
+    withProgress(message = 'Analysis in process', value = 0.3, {
       all_results <- funcion_berlin(
         input_eds = rtpcr, 
         output = paste(output, "/", sep=""))
@@ -464,7 +457,7 @@ server <- function(input, output, session) {
     all_results <- table_out()
 
     if (!is.character(all_results$single_plots) & !is.character(all_results$test_results) & !is.character(all_results$qc_results)){
-      withProgress(message = 'generando reportes', value = 0.3, {
+      withProgress(message = 'reports in process', value = 0.3, {
         function_reports(
           results_list = table_out(), 
           input_eds = rtpcr, 
@@ -480,13 +473,13 @@ server <- function(input, output, session) {
   
   ####### IMPRIMIR EL DIRECTORIO DE SALIDA
   output$text_reports2 <- renderText({
-    "Recuerda que las muestras deben ser analizadas primero"
+    "REMEMBER THAT THE ANALYSIS OF THE SAMPLE SHOULD BE COMPLETED BEFORE THE REPORTS CAN BE GENERATED"
 })
   
   output$test_reports <- renderText({
     all_results <- table_out()
     if (is.character(all_results$single_plots) | is.character(all_results$test_results) | is.character(all_results$qc_results)){
-      "Hubo un error durante el análisis, el reporte no se generará"
+      "THERE WAS AN ERROR DURING THE ANALYSIS, THE REPORT WILL NOT BE GENERATED"
     }
   })
   
