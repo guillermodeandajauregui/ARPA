@@ -3,169 +3,69 @@
 # R code for generat reports - COVID19 eds app/COVID binnacle
 # by: INMEGEN Computational Genomics Dept
 # Hugo Tovar hatovar@inmegen.gob.mx and
-# 
+#
 ################################################################################
 
-
+#
+#
+#
 
 
 ################################################################################
 #required libs
 ################################################################################
 library("rmarkdown")
-library("pdftools")
-
-
-######################################################################################
-######################################################################################
-#                                    s     r    c                                    #
-######################################################################################
-######################################################################################
-
+library("ezknitr")
+library("knitr")
+library("kableExtra")
 ######make_reports
 
-make_reports <- function(plot_list, 
+make_reports <- function(plot_list,
                          result_table,
                          input,
-                         outdir, 
+                         outdir,
                          qc_results,
-                         qc = F){
+                         qc = FALSE) {
   plate <- stringr::str_remove(string = basename(input), pattern = ".eds")
-  qcplate <- ifelse(qc_results == "PASS", "true", "")
-  qcs <- which(names(plot_list) %in% c("NTC", "PTC", "CRE"))
+  plate_sec <- paste0(gsub("[^[:alnum:]]", "_",
+                           unique(plate[order(plate)])),
+                      collapse = "-")
+  reports_folder <- paste0("plate_", plate_sec, "_reports/")
   smpls <- which(!(names(plot_list) %in% c("NTC", "PTC", "CRE")))
-  smplsPlots <- plot_list[smpls]
-  #makes reports from a list of plots and some result table
-  if(qc==F){
-  if(file.exists("./temp")){unlink("temp/", recursive = TRUE)}
-  dir.create("./temp")
-  lapply(seq_along(smplsPlots), function(i){
-        the_sample_is <- names(smplsPlots)[i]    
-        my_name <- names(smplsPlots)[i]
-        mea_plote <- smplsPlots[i]
-        outpath <- paste0("./temp", "/", Sys.Date(), "_", my_name, ".smpl.pdf")
-        render("template_smpl.Rmd",output_file = outpath)})
-  pdfs <- dir("./temp", full.names = TRUE)
-  outpath <- paste0(outdir, "/", Sys.Date(), "_", plate, ".smpls.pdf")
-  pdf_combine(pdfs, output = outpath)
-  unlink("temp/", recursive = TRUE)
-  }else{
-    my_r <- as.matrix(result_table)[,c("sample", "gen_e", "gen_r_nasa_p")]
+  smpls_plots <- plot_list[smpls]
+  if (qc == FALSE) {
+  for (i in seq_along(smpls_plots)) {
+        ezknit(file = "templates/report_sample_.Rmd",
+          out_dir = paste0(outdir, "/", reports_folder),
+          out_suffix = names(smpls_plots)[i],
+          keep_md = FALSE,
+          params = list(the_sample_is = names(smpls_plots)[i],
+                        plate = plate,
+                        qc_results = qc_results,
+                        p = smpls_plots[[i]],
+                        date = Sys.Date()
+                      )
+        )}
+    file.copy(paste0(getwd(),"/templates/ARPA_logo.png"), paste0(outdir, "/", reports_folder))
+  } else {
+    my_r <- as.matrix(result_table)[, c("sample", "gen_e", "gen_r_nasa_p")]
     my_r[grep("Inf", my_r)] <- "45+"
-    ntc <- grep(pattern = "NTC", x = names(plot_list))
-  ptc <- grep(pattern = "PTC", x = names(plot_list))
-  exc <- grep(pattern = "CRE", x = names(plot_list))
-    outpath <- paste0(outdir, "/", Sys.Date(), "_", plate, ".pdf")
-    render("template_qc.Rmd",output_file = outpath)
-  }
+    ntc_plot <- plot_list[grep(pattern = "NTC", x = names(plot_list))]
+    ptc_plot <- plot_list[grep(pattern = "PTC", x = names(plot_list))]
+    exc_plot <- plot_list[grep(pattern = "CRE", x = names(plot_list))]
+        ezknit(file = "templates/qc_report_plate_.Rmd",
+          out_dir = paste0(outdir, "/", reports_folder),
+          out_suffix = plate_sec,
+          keep_md = FALSE,
+          params = list(plate = plate,
+                        qc_results = qc_results,
+                        my_r = my_r,
+                        ntc_p = ntc_plot,
+                        ptc_p = ptc_plot,
+                        exc_p = exc_plot,
+                        date = Sys.Date()
+                      )
+            )
+        file.copy(paste0(getwd(),"/templates/ARPA_logo.png"), paste0(outdir, "/", reports_folder))
+        }
 }
-
-## Extracts the plaque processing date from the sample INMEGEN ID
-getDecade <- function(idinmegen){
-  sapply(sapply(idinmegen, 
-            function(x){strsplit(x, split = "-")}), 
-    function(x){x[2]})
-}
-
-getMonth <- function(idinmegen){
-  tail <- sapply(sapply(idinmegen, 
-            function(x){strsplit(x, split = "-")}), 
-    function(x){x[4]})
-  monthID <- substr(tail, start = 3, stop = 3)
-  month <- sapply(idinmegen, function(x){which(c("E", "F", "Z", "A", "Y", "J", "L", "G", "S", "O", "N", "D") %in% monthID)})
-  return(month)
-}
-
-getDay <- function(idinmegen){
-  tail <- sapply(sapply(idinmegen, 
-            function(x){strsplit(x, split = "-")}), 
-    function(x){x[4]})
-  day <- substr(tail, start = 1, stop = 2)
-  return(day)
-}
-
-getDate <- function(idinmegen){
-  myDate <- as.Date(paste(paste("20", getDecade(idinmegen), sep = ""), 
-                        getMonth(idinmegen), 
-                        getDay(idinmegen), sep ="-"))
-  return(myDate)
-}
-
-## Extract the client ID from the sample INMEGEN ID
-getClientID <- function(idinmegen){
-  sapply(sapply(idinmegen, 
-            function(x){strsplit(x, split = "-")}), 
-    function(x){x[3]})
-}
-
-# ######################################################################################
-# ######################################################################################
-# #                                   Inform Lab                                       #
-# ######################################################################################
-# ######################################################################################
-
-
-# Print the plate report for the lab
-plateBooklet <- function(results, outdir, qc_results){
-    qcdf <- data.frame(controType = c("Positivo", "Negativo", "Extracción"), 
-                    externalName = c("PTC", "NTC", "CRE"), 
-                    used = c("Falla sustancial del reactivo, incluida la integridad del primer y la sonda.", "Contaminación de reactivos y/o ambiente.", "Falla en el procedimiento de lisis y extracción, contaminación potencial durante la extracción."))
-    qc_table <- data.frame(qc_results$qc.values[c(3, 1, 2),c(2, 3)])
-    my_qc <- cbind(qcdf,qc_table)
-    rownames(my_qc) <- c("PTC", "NTC", "CRE")
-    my_qc["PTC", c("gen_e", "gen_r_nasa_p")] = ifelse(qc_results$ptc.pass == "PASS", paste("\\color{teal}{", my_qc["PTC", c("gen_e", "gen_r_nasa_p")], "}", sep = "") , paste("\\cellcolor{red!50}{", my_qc["PTC", c("gen_e", "gen_r_nasa_p")], "}", sep = "") )
-    my_qc["NTC", c("gen_e", "gen_r_nasa_p")] = ifelse(qc_results$ntc.pass == "PASS", paste("\\color{teal}{", "+45", "}", sep = ""), paste("\\cellcolor{red!50}{", my_qc["NTC", c("gen_e", "gen_r_nasa_p")], "}", sep = "") )
-    my_qc["CRE", c("gen_e", "gen_r_nasa_p")] = ifelse(qc_results$ec.pass== "PASS", paste("\\color{teal}{", "+45", "}", sep = ""), paste("\\cellcolor{red!50}{", my_qc["CRE", c("gen_e", "gen_r_nasa_p")], "}", sep = ""))
-
-    my_r <- results[,c("plate", "sample_name", "gen_e", "gen_r_nasa_p", "classification")]
-      my_r <- cbind(nsample = sub('(^[0-9]$)','0\\1', 1:length(my_r[,1])), my_r)
-      my_r[,"gen_e"] = ifelse(my_r[,"gen_e"] == "Inf", "Indeterminado", paste("\\cellcolor{red!50}{", my_r[,"gen_e"], "}", sep = ""))
-      my_r[,"classification"] = ifelse(my_r[,"classification"] == "positive", "\\cellcolor{red!50}{positivo}", 
-                                      ifelse(my_r[,"classification"] == "negative", "\\cellcolor{yellow!50}{negativo}", 
-                                            ifelse(my_r[,"classification"] == "inconclusive", "\\cellcolor{cyan!50}{inconclusive}", 
-                                                  ifelse(my_r[,"classification"] == "invalid", "\\cellcolor{cyan!50}{invalid}", 
-                                                        ifelse(my_r[,"classification"] == "edge_positive", "\\cellcolor{red!25}{positivo marginal}", 
-                                                          my_r[,"classification"])))))
-    processingdate <- Sys.Date() #unique(getDate(my_r$sample))
-    plate <- unique(results$plate)
-    outpath <- paste0(outdir, "/", Sys.Date(), "_", plate, "_", "plateBooklet.pdf") 
-    render("plateBooklet.Rmd",output_file = outpath)
-}
-
-
-
-
-# ######################################################################################
-# ######################################################################################
-# #                                 Inform Client                                      #
-# ######################################################################################
-# ######################################################################################
-
-## Print the results report for all clients
-resultsReport <- function(results, outdir){
-    the_samples <- which(results$qc == "PASS" 
-        & (results$classification == "positive" 
-          | results$classification == "negative"))
-    my_r <- results[the_samples, c("sample", "classification")]
-            my_r <- cbind(nsample = sub('(^[0-9]$)','0\\1', 1:length(my_r[,1])), my_r)
-            my_r$classification = ifelse(my_r$classification == "positive", paste("\\cellcolor{red!50}{", "positive", "}", sep = ""),"negative")
-    client <- getClientID(my_r$sample)
-    n_samples <- length(rownames(my_r))
-    allsamples <- length(rownames(results))
-    processingdate <- unique(getDate(my_r$sample))
-    client_file <- paste0(gsub("[^[:alnum:]]", "_", unique(client[order(client)])), collapse = "-")# Claimant name institution safe for file name
-    outpath <- paste0(outdir, "/", Sys.Date(), "_", client_file, "_", "report.pdf") 
-    render("resultsReport.Rmd",output_file = outpath)
-  }
-
-## Print the results report by clients
-
-makeReports <- function(table_diagnosis, # data with columns like simulated data
-                         outdir # The report output directory will be defined either by the user or by the DDT
-                         ){
-    results <- cbind(table_diagnosis, id_client = getClientID(table_diagnosis$sample))
-    lapply(split(results,results$id_client), resultsReport, outdir = outdir)
-  }
-
-
-
