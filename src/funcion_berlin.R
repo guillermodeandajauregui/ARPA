@@ -79,6 +79,31 @@ funcion_berlin <- function(input_eds,
     
   
   ################################################################################
+  # Modify 99 and Inf to >45 sample results
+  ################################################################################
+  if (!is.character(test.results)){
+    test.results = test.results %>% 
+      mutate(gen_e = ifelse(gen_e == "99", ">40", gen_e)) %>% 
+      mutate(gen_e = ifelse(gen_e == "Inf", ">40", gen_e)) %>% 
+      mutate(gen_r_nasa_p = ifelse(gen_r_nasa_p == "99", ">40", gen_r_nasa_p)) %>% 
+      mutate(gen_r_nasa_p = ifelse(gen_r_nasa_p == "Inf", ">40", gen_r_nasa_p))
+  }
+  
+  ################################################################################
+  # Modify 99 and Inf to >45 QC results, remove warnings colums
+  ################################################################################
+  if (!is.character(qc_results)){
+    qc.values = qc_results$qc.values
+    qc.values = qc.values %>% 
+      mutate(gen_e = ifelse(gen_e == "99", ">40", gen_e)) %>% 
+      mutate(gen_e = ifelse(gen_e == "Inf", ">40", gen_e)) %>% 
+      mutate(gen_r_nasa_p = ifelse(gen_r_nasa_p == "99", ">40", gen_r_nasa_p)) %>% 
+      mutate(gen_r_nasa_p = ifelse(gen_r_nasa_p == "Inf", ">40", gen_r_nasa_p)) %>% 
+      select(-warnings)
+    qc_results$qc.values <- qc.values
+  }
+  
+  ################################################################################
   #Create list output
   ################################################################################
   

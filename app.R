@@ -464,6 +464,8 @@ server <- function(input, output, session) {
           output = paste(output, "/", sep=""))
       })
     }
+    
+    return(output)
   })
   
   ####### IMPRIMIR EL DIRECTORIO DE SALIDA
