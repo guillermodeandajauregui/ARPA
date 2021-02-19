@@ -103,6 +103,10 @@ sh launcher.R
  - Open the app.R file in RStudio
  - Click the Run button in Rstudio
 
+## TEST DATA
+
+A sample EDS file and a sample report are provided in the sample_files directory
+ 
 ## AUTHORS
 
  - Laura Gómez-Romero [lgomez@inmegen.gob.mx]
