@@ -24,7 +24,4 @@ sudo Rscript -e 'ifelse("janitor" %in% rownames(installed.packages()), paste("ja
 sudo Rscript -e 'ifelse("vroom" %in% rownames(installed.packages()), paste("vroom v.", packageVersion("vroom"), "installed"), install.packages("vroom", dependencies = TRUE, repos = "https://cloud.r-project.org/"))'
 sudo Rscript -e 'ifelse("ezknitr" %in% rownames(installed.packages()), paste("ezknitr v.", packageVersion("ezknitr"), "installed"), install.packages("ezknitr", dependencies = TRUE, repos = "https://cloud.r-project.org/"))'
 
-##### VERIFY THE EXISTENCE OF COMMAND RSCRIPT
-command -v apt-get >/dev/null 2>&1 || { echo >&2 "LATEX UPDATE COULD NOT BE DONE. apt-get REQUIRED. IF YOU ARE ON MacOSX YOU SHOULD UPDATE YOUR LATEX PACKAGES IN LIVE-MAC UTILITY."; exit 1; }
 
-apt-get install texlive-full
