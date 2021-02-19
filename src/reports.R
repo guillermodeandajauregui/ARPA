@@ -48,8 +48,7 @@ make_reports <- function(plot_list,
         )}
     file.copy(paste0(getwd(),"/templates/ARPA_logo.png"), paste0(outdir, "/", reports_folder))
   } else {
-    my_r <- as.matrix(result_table)[, c("sample", "gen_e", "gen_r_nasa_p")]
-    my_r[grep("Inf", my_r)] <- "45+"
+    my_r <- result_table[, c("sample", "gen_e", "gen_r_nasa_p")]
     ntc_plot <- plot_list[grep(pattern = "NTC", x = names(plot_list))]
     ptc_plot <- plot_list[grep(pattern = "PTC", x = names(plot_list))]
     exc_plot <- plot_list[grep(pattern = "CRE", x = names(plot_list))]
