@@ -19,17 +19,12 @@ ARPA has several functionalities:
  - It generates a HTML report with a QC report of the experiment
 
 
-### ATUOMATIC ASSESMENT OF THE EXPERIMENT'S QUALITY AND OF THE AMPLIFICATION CURVES 
+### AUTOMATIC ASSESMENT OF THE EXPERIMENT'S QUALITY AND OF THE AMPLIFICATION CURVES 
 
-The values of the fluorescence per cycle are retrieved from the files exportes by the RT-PCR equipment. The curves are evaluated. A correct amplification should behave as a sigmoid curve and cross a fluroescence threshold before a chosen cycle.
+The values of the fluorescence per cycle are retrieved from the files exporteD by the RT-PCR equipment. The curves are evaluated. A correct amplification should behave as a sigmoid curve and cross a fluroescence threshold before a chosen cycle.
 
-All control samples are evaluated to determine the quality of the experiment.
-
-**imagen**
-
-The curves for each sample are assesed to determine the status of each sample
-
-**imagen**
+ - All control samples are evaluated to determine the quality of the experiment.
+ - The curves for each sample are assesed to determine the status of each sample
 
 
 ### FRIENDLY WEB-INTERFACE TO LOOK AT THE AMPLIFICATION CURVES AND THE RESULTS OF THE EXPERIMENT
