@@ -52,11 +52,12 @@ The values of the fluorescence per cycle are retrieved from the files exporteD b
 
 
 ### AUTOMATIC GENERATION OF HTML REPORTS 
-Individual report (in HTML format) per sample is generated. It contains the amplificacion curves and QC results of the plate.
+
+**Individual report (in HTML format) per sample is generated. It contains the amplificacion curves and QC results of the plate.**
 
 ![alt text](https://github.com/guillermodeandajauregui/ARPA/blob/spm/images/html_sample.png?raw=true)
 
-A HTML quality report with the quality assesment and the control amplification curves is generated
+**A quality HTML report with the quality assesment and the control amplification curves is generated**
 
 ![alt text](https://github.com/guillermodeandajauregui/ARPA/blob/spm/images/html_qc.png?raw=true)
 
