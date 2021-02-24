@@ -5,7 +5,6 @@ output:
 		theme: espresso
 		self_contained: false
 ---
-
 <div align="right">Date: `r date`</div>
 
 <div class="header">
@@ -13,6 +12,7 @@ output:
 </div>
 
 <div align="center"><h1>Plate QC curves</h1></div>
+<div align="center"><h2>Plate `r plate`</h2></div>
 
 <p style="text-align:left;">
     Plate ID: `r plate`
@@ -20,6 +20,7 @@ output:
         Plate control: `r qc_results`
     </span>
 </p>
+---
 
 
 #### QC results table

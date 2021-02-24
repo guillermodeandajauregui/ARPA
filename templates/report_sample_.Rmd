@@ -3,19 +3,17 @@ title: "`r paste0(the_sample_is, " sample report")`"
 output: 
 	html_document:
 		theme: espresso
-fig_width: 6
-fig_height: 7
+		self_contained: false
 ---
 <div align="right">Date: `r date`</div>
 
-```{r, echo=FALSE}
-htmltools::img(src = "ARPA_logo.png", 
-               alt = 'ARPA logo', 
-               style = 'position:absolute; top:0; left:0; padding:10px;')
-```
+<div class="header">
+  <img align="left" src="ARPA_logo.png" alt="ARPA"/>
+</div>
 
-<div align="center"><h1>qPCR curves</h1></div>>
-<div align="center"><h2>sample `r the_sample_is`</h2></div>>
+<div align="center"><h1>qPCR curves</h1></div>
+<div align="center"><h2>Sample `r the_sample_is`</h2></div>
+
 <p style="text-align:left;">
     Plate ID: `r plate`
     <span style="float:right;">
